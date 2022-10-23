@@ -7,7 +7,7 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { AuthModule } from './auth/auth.module';
 import { ProfileModule } from './profile/profile.module';
 import { DataSourceOptions } from 'typeorm';
-
+import { TagModule } from './tag/tag.module';
 @Module({
   imports: [
     ConfigModule.forRoot({
@@ -29,6 +29,7 @@ import { DataSourceOptions } from 'typeorm';
     }),
     AuthModule,
     ProfileModule,
+    TagModule,
   ],
   controllers: [AppController],
   providers: [AppService],
