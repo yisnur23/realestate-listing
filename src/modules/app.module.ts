@@ -2,7 +2,7 @@ import { Module } from '@nestjs/common';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { ConfigModule, ConfigService } from '@nestjs/config';
-import { configSchema, database } from './config';
+import { configSchema, database } from '../config';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { AuthModule } from './auth/auth.module';
 import { ProfileModule } from './profile/profile.module';
@@ -21,8 +21,10 @@ import { DataSourceOptions } from 'typeorm';
     }),
     TypeOrmModule.forRootAsync({
       imports: [ConfigModule],
-      useFactory: (configService: ConfigService) =>
-        configService.get<DataSourceOptions>('database'),
+      useFactory: (configService: ConfigService) => ({
+        ...configService.get<DataSourceOptions>('database'),
+        autoLoadEntities: true,
+      }),
       inject: [ConfigService],
     }),
     AuthModule,
