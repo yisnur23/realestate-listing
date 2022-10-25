@@ -1,12 +1,16 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { TagService } from '../tag.service';
 import { TagRepository } from '../tag.repository';
-import { NotFoundException } from '@nestjs/common';
+import { ConflictException, NotFoundException } from '@nestjs/common';
 import { generateMockRepository, MockRepository } from '../../../common/utils';
 
 describe('TagService', () => {
+  const overrides = {
+    findOneByName: jest.fn(),
+  };
+
   let service: TagService;
-  let tagRepository: MockRepository;
+  let tagRepository: MockRepository & typeof overrides;
   const tagId = 'uuid';
   const tagDto = {
     name: 'tag_name',
@@ -17,7 +21,10 @@ describe('TagService', () => {
   };
 
   beforeEach(async () => {
-    const mockTagRepository = generateMockRepository();
+    const mockTagRepository = {
+      ...generateMockRepository<TagRepository>(),
+      ...overrides,
+    };
     const module: TestingModule = await Test.createTestingModule({
       providers: [
         TagService,
@@ -37,9 +44,21 @@ describe('TagService', () => {
   });
   describe('Create Tag Service', () => {
     it('creates a tag', async () => {
+      tagRepository.findOneByName.mockReturnValue(undefined);
       await service.create(tagDto);
+      expect(tagRepository.findOneByName).toBeCalledTimes(1);
+      expect(tagRepository.findOneByName).toBeCalledWith(tagDto.name);
       expect(tagRepository.insert).toBeCalledTimes(1);
       expect(tagRepository.insert).toBeCalledWith(tagDto);
+    });
+    it('throws a conflict error if a tag with the same name exists', async () => {
+      tagRepository.findOneByName.mockReturnValue(tag);
+      try {
+        await service.create(tagDto);
+      } catch (err) {
+        expect(err).toBeInstanceOf(ConflictException);
+        expect(err.message).toEqual(`tag name ${tagDto.name} already exists.`);
+      }
     });
   });
   describe('Find All Tags Service', () => {
@@ -64,19 +83,32 @@ describe('TagService', () => {
         await service.findOne(tagId);
       } catch (err) {
         expect(err).toBeInstanceOf(NotFoundException);
-        expect(err.message).toEqual(`Tag with id ${tagId} not found`);
+        expect(err.message).toEqual(`tag with id ${tagId} not found`);
       }
     });
   });
   describe('Update Tag Service', () => {
     it('updates a tag', async () => {
+      tagRepository.findById.mockReturnValue(tag);
+      tagRepository.findOneByName.mockReturnValue(undefined);
       await service.update(tagId, tagDto);
       expect(tagRepository.update).toBeCalledTimes(1);
       expect(tagRepository.update).toBeCalledWith(tagId, tagDto);
     });
+    it('throws an error if tag with a similar name aleady exists', async () => {
+      tagRepository.findById.mockReturnValue(tag);
+      tagRepository.findOneByName.mockReturnValue(tag);
+      try {
+        await service.update(tagId, tagDto);
+      } catch (err) {
+        expect(err).toBeInstanceOf(ConflictException);
+        expect(err.message).toEqual(`tag name ${tagDto.name} already exists.`);
+      }
+    });
   });
   describe('Delete Tag Service', () => {
     it('deletes a tag', async () => {
+      tagRepository.findById.mockReturnValue(tag);
       await service.remove(tagId);
       expect(tagRepository.delete).toBeCalledTimes(1);
       expect(tagRepository.delete).toBeCalledWith(tagId);

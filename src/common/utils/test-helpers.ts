@@ -21,13 +21,10 @@ type BaseService<T = any> = {
 export type MockService<T = any> = Partial<
   Record<keyof BaseService<T>, jest.Mock>
 >;
-export const generateMockService = <T = any>(overrides?: {
-  [key: string]: jest.Mock;
-}): MockService<T> => ({
+export const generateMockService = <T = any>(): MockService<T> => ({
   create: jest.fn(),
   findAll: jest.fn(),
   findOne: jest.fn(),
   update: jest.fn(),
   remove: jest.fn(),
-  ...overrides,
 });
