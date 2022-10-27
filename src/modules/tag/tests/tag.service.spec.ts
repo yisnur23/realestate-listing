@@ -66,6 +66,7 @@ describe('TagService', () => {
       tagRepository.find.mockReturnValue([tag]);
       const result = await service.findAll();
       expect(tagRepository.find).toBeCalledTimes(1);
+      expect(tagRepository.find).toBeCalledWith({ take: 20, skip: 0 });
       expect(result).toEqual([tag]);
     });
   });
