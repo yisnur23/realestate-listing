@@ -44,9 +44,12 @@ describe('TagController', () => {
   });
   describe('Find All Tags Controller', () => {
     it('returns all tags', async () => {
+      const take = 20;
+      const skip = 0;
       tagService.findAll.mockReturnValue([tag]);
-      const returnedValue = await controller.findAll();
+      const returnedValue = await controller.findAll(20, 0);
       expect(tagService.findAll).toBeCalledTimes(1);
+      expect(tagService.findAll).toBeCalledWith(take, skip);
 
       expect(returnedValue).toEqual([tag]);
     });
