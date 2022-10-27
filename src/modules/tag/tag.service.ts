@@ -21,8 +21,11 @@ export class TagService {
     await this.tagRepository.insert(createTagDto);
   }
 
-  findAll() {
-    return this.tagRepository.find();
+  findAll(take = 20, skip = 0) {
+    return this.tagRepository.find({
+      take,
+      skip,
+    });
   }
 
   async findOne(id: string) {

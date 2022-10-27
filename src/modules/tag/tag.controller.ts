@@ -6,6 +6,7 @@ import {
   Patch,
   Param,
   Delete,
+  Query,
 } from '@nestjs/common';
 import { TagService } from './tag.service';
 import { CreateTagDto } from './dto/create-tag.dto';
@@ -23,8 +24,8 @@ export class TagController {
   }
 
   @Get()
-  findAll() {
-    return this.tagService.findAll();
+  findAll(@Query('take') take: number, @Query('skip') skip: number) {
+    return this.tagService.findAll(take, skip);
   }
 
   @Get(':id')
