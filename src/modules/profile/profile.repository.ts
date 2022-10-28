@@ -7,4 +7,9 @@ export class ProfileRepository extends Repository<User> {
   constructor(private dataSource: DataSource) {
     super(User, dataSource.createEntityManager());
   }
+  findByEmail(email: string) {
+    return this.findOneBy({
+      email,
+    });
+  }
 }

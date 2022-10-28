@@ -1,2 +1,2 @@
 export * from './config.schema';
-export * from './database.config';
+export * from './app.config';

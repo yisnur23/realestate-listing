@@ -28,11 +28,17 @@ export class User {
   role: UserRole;
   @Column({
     nullable: false,
+    unique: true,
   })
   email: string;
-  @Column()
+  @Column({
+    nullable: true,
+    unique: true,
+  })
   phone: string;
-  @Column()
+  @Column({
+    nullable: true,
+  })
   password: string;
   @Column({
     default: false,
@@ -44,10 +50,16 @@ export class User {
     default: SignUpMethod.PASSWORD,
   })
   sign_up_method: SignUpMethod;
-  @Column()
+  @Column({
+    nullable: true,
+  })
   telegram_link: string;
-  @Column()
+  @Column({
+    nullable: true,
+  })
   whatsapp_number: string;
-  @Column()
+  @Column({
+    nullable: true,
+  })
   profile_picture: string;
 }
