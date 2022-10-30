@@ -6,12 +6,6 @@ export enum UserRole {
   BUYER = 'buyer',
 }
 
-export enum SignUpMethod {
-  PASSWORD = 'password',
-  GOOGLE = 'google',
-  FACEBOOK = 'facebook',
-}
-
 @Entity()
 export class User {
   @PrimaryGeneratedColumn('uuid')
@@ -20,6 +14,10 @@ export class User {
   first_name: string;
   @Column()
   last_name: string;
+  @Column({
+    nullable: true,
+  })
+  display_name: string;
   @Column({
     type: 'enum',
     enum: UserRole,
@@ -36,28 +34,17 @@ export class User {
     unique: true,
   })
   phone: string;
-  @Column({
-    nullable: true,
-  })
-  password: string;
+
   @Column({
     default: false,
   })
   is_verified: boolean;
-  @Column({
-    type: 'enum',
-    enum: SignUpMethod,
-    default: SignUpMethod.PASSWORD,
-  })
-  sign_up_method: SignUpMethod;
+
   @Column({
     nullable: true,
   })
   telegram_link: string;
-  @Column({
-    nullable: true,
-  })
-  whatsapp_number: string;
+
   @Column({
     nullable: true,
   })

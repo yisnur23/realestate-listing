@@ -2,7 +2,7 @@ import { Module } from '@nestjs/common';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { ConfigModule, ConfigService } from '@nestjs/config';
-import { configSchema, database, google, app } from '../config';
+import { configSchema, database, google, session } from '../config';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { AuthModule } from './auth/auth.module';
 import { ProfileModule } from './profile/profile.module';
@@ -12,7 +12,7 @@ import { TagModule } from './tag/tag.module';
   imports: [
     ConfigModule.forRoot({
       isGlobal: true,
-      load: [database, google, app],
+      load: [database, google, session],
       validationSchema: configSchema,
       validationOptions: {
         allowUnknown: true,

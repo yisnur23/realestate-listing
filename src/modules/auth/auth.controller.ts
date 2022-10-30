@@ -1,21 +1,26 @@
-import { Controller, Get, Query, Session } from '@nestjs/common';
+import { Controller, Get, Req, UseGuards } from '@nestjs/common';
+import { GoogleAuthGuard, isAuthenticated } from './auth.guard';
 import { AuthService } from './auth.service';
 
 @Controller('auth')
 export class AuthController {
   constructor(private authService: AuthService) {}
   @Get('/google/login')
-  googleLogin(): string {
-    return this.authService.getGoogleAuthUrl();
+  @UseGuards(GoogleAuthGuard)
+  googleLogin() {
+    return 'google login';
   }
+
   @Get('/google/redirect')
-  googleRedired(@Query() query, @Session() session) {
-    const code = query.code;
-    return this.authService.googleRedirect(code, session);
+  @UseGuards(GoogleAuthGuard)
+  googleRedirect() {
+    return 'google redirect';
   }
-  @Get('/ls')
-  list(@Session() session) {
-    console.log(session);
-    return this.authService.listUsers();
+
+  @Get('/protected')
+  @UseGuards(isAuthenticated)
+  protected(@Req() req) {
+    console.log('user', req.user);
+    return "u've got access";
   }
 }

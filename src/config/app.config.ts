@@ -1,4 +1,5 @@
 import { registerAs } from '@nestjs/config';
+import { SessionOptions } from 'express-session';
 import { DataSourceOptions } from 'typeorm';
 
 export const database = registerAs('database', (): DataSourceOptions => {
@@ -43,5 +44,19 @@ export const app = registerAs(
   (): AppConfig => ({
     sessionSecret: process.env.SESSION_SECRET,
     nodeEnv: process.env.NODE_ENV,
+  }),
+);
+
+export const session = registerAs(
+  'session',
+  (): SessionOptions => ({
+    secret: process.env.SESSION_SECRET,
+    resave: false,
+    saveUninitialized: false,
+    cookie: {
+      secure: false,
+      sameSite: false,
+      httpOnly: false,
+    },
   }),
 );

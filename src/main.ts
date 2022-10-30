@@ -2,21 +2,19 @@ import { ValidationPipe } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { NestFactory } from '@nestjs/core';
 import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
-import session from 'express-session';
-import { AppConfig } from './config';
+import session, { SessionOptions } from 'express-session';
+import passport from 'passport';
 import { AppModule } from './modules/app.module';
+import { NestExpressApplication } from '@nestjs/platform-express';
 
 async function bootstrap() {
-  const app = await NestFactory.create(AppModule);
+  const app = await NestFactory.create<NestExpressApplication>(AppModule);
   const configService = app.get(ConfigService);
-  const appConfig = configService.get<AppConfig>('app');
-  app.use(
-    session({
-      secret: appConfig.sessionSecret,
-      resave: false,
-      saveUninitialized: false,
-    }),
-  );
+  const sessionConfig = configService.get<SessionOptions>('session');
+
+  app.use(session(sessionConfig));
+  app.use(passport.initialize());
+  app.use(passport.session());
   app.useGlobalPipes(
     new ValidationPipe({
       whitelist: true,
