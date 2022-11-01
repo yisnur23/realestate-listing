@@ -2,8 +2,7 @@ import { PrimaryGeneratedColumn, Entity, Column } from 'typeorm';
 
 export enum UserRole {
   ADMIN = 'admin',
-  SELLER = 'seller',
-  BUYER = 'buyer',
+  USER = 'user',
 }
 
 @Entity()
@@ -21,7 +20,7 @@ export class User {
   @Column({
     type: 'enum',
     enum: UserRole,
-    default: UserRole.BUYER,
+    default: UserRole.USER,
   })
   role: UserRole;
   @Column({

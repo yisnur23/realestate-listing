@@ -8,6 +8,11 @@ import { AuthModule } from './auth/auth.module';
 import { ProfileModule } from './profile/profile.module';
 import { DataSourceOptions } from 'typeorm';
 import { TagModule } from './tag/tag.module';
+import { AbilityModule } from './ability/ability.module';
+import { APP_GUARD } from '@nestjs/core';
+import { AbilitiesGuard } from './ability/ability.guard';
+import { AuthenticationGuard } from './auth/auth.guard';
+
 @Module({
   imports: [
     ConfigModule.forRoot({
@@ -31,8 +36,19 @@ import { TagModule } from './tag/tag.module';
     AuthModule,
     ProfileModule,
     TagModule,
+    AbilityModule,
   ],
   controllers: [AppController],
-  providers: [AppService],
+  providers: [
+    AppService,
+    {
+      provide: APP_GUARD,
+      useClass: AuthenticationGuard,
+    },
+    {
+      provide: APP_GUARD,
+      useClass: AbilitiesGuard,
+    },
+  ],
 })
 export class AppModule {}
