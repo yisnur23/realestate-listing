@@ -26,6 +26,6 @@ export class AbilitiesGuard implements CanActivate {
 
     const ability = this.abilityFactory.defineAbilityFor(user);
 
-    return rules.some((rule) => ability.can(rule.action, rule.subject));
+    return !!rules?.some((rule) => ability.can(rule.action, rule.subject));
   }
 }
