@@ -1,9 +1,9 @@
 import {
   AbilityBuilder,
-  AbilityClass,
   ExtractSubjectType,
   InferSubjects,
   PureAbility,
+  createMongoAbility,
 } from '@casl/ability';
 import { Injectable } from '@nestjs/common';
 import { User, UserRole } from '../profile/entities/user.entity';
@@ -23,9 +23,7 @@ export type AppAbility = PureAbility<[Action, Subjects]>;
 @Injectable()
 export class AbilityFactory {
   defineAbilityFor(user: User) {
-    const { can, cannot, build } = new AbilityBuilder(
-      PureAbility as AbilityClass<AppAbility>,
-    );
+    const { can, cannot, build } = new AbilityBuilder(createMongoAbility);
 
     if (user?.role === UserRole.ADMIN) {
       can(Action.Manage, 'all');
@@ -38,7 +36,7 @@ export class AbilityFactory {
       // can manage own listings and favs
     } else {
       can(Action.Read, 'all');
-      cannot(Action.Read, User, ['last_name', 'role', 'favorites']);
+      cannot(Action.Read, User, ['email', 'last_name', 'role']);
     }
     return build({
       detectSubjectType: (item) =>

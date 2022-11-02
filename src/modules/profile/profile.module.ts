@@ -4,9 +4,10 @@ import { ProfileController } from './profile.controller';
 import { ProfileService } from './profile.service';
 import { User } from './entities/user.entity';
 import { ProfileRepository } from './profile.repository';
+import { AbilityModule } from '../ability/ability.module';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([User])],
+  imports: [TypeOrmModule.forFeature([User]), AbilityModule],
   controllers: [ProfileController],
   providers: [ProfileService, ProfileRepository],
   exports: [ProfileService],
