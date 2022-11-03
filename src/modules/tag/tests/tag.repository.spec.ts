@@ -17,7 +17,6 @@ describe('TagRepository', () => {
     tagRepository = module.get<TagRepository>(TagRepository);
   });
   it('should be defined', () => {
-    console.log(tagRepository);
     expect(tagRepository).toBeDefined();
   });
 

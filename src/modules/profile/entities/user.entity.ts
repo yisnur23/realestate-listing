@@ -18,7 +18,7 @@ export class User {
   })
   display_name: string;
   @Column({
-    type: 'enum',
+    type: 'simple-enum',
     enum: UserRole,
     default: UserRole.USER,
   })

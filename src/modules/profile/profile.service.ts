@@ -63,7 +63,7 @@ export class ProfileService {
 
     const allowedFields = permittedFieldsOf(
       ability,
-      Action.Read,
+      Action.Update,
       profile,
       options,
     );

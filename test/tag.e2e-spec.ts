@@ -6,12 +6,13 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { testingDbConfig } from './testing-db-config';
 import { CreateTagDto } from '../src/modules/tag/dto/create-tag.dto';
 import { TagRepository } from '../src/modules/tag/tag.repository';
+import crypto from 'crypto';
 
 describe('TagController (e2e)', () => {
   let app: INestApplication;
   let tagRepository: TagRepository;
   const route = '/tags';
-  const id = 'tag_id';
+  const id = crypto.randomUUID();
   const createTagDto: CreateTagDto = {
     name: 'tag_name',
   };
@@ -106,5 +107,9 @@ describe('TagController (e2e)', () => {
 
       expect(response.statusCode).toBe(200);
     });
+  });
+
+  afterAll(async () => {
+    await app.close();
   });
 });
