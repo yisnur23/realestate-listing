@@ -1,4 +1,5 @@
 import { Module } from '@nestjs/common';
+import { RouterModule } from '@nestjs/core';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { ConfigModule, ConfigService } from '@nestjs/config';
@@ -12,6 +13,8 @@ import { AbilityModule } from './ability/ability.module';
 import { APP_GUARD } from '@nestjs/core';
 import { AbilitiesGuard } from './ability/ability.guard';
 import { AuthenticationGuard } from './auth/auth.guard';
+import { AddressModule } from './address/address.module';
+import { AddressRoutes } from './address/address.routes';
 
 @Module({
   imports: [
@@ -37,18 +40,20 @@ import { AuthenticationGuard } from './auth/auth.guard';
     ProfileModule,
     TagModule,
     AbilityModule,
+    AddressModule,
+    RouterModule.register(AddressRoutes),
   ],
   controllers: [AppController],
   providers: [
     AppService,
-    {
-      provide: APP_GUARD,
-      useClass: AuthenticationGuard,
-    },
-    {
-      provide: APP_GUARD,
-      useClass: AbilitiesGuard,
-    },
+    // {
+    //   provide: APP_GUARD,
+    //   useClass: AuthenticationGuard,
+    // },
+    // {
+    //   provide: APP_GUARD,
+    //   useClass: AbilitiesGuard,
+    // },
   ],
 })
 export class AppModule {}
