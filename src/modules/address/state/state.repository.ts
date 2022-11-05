@@ -8,4 +8,9 @@ export class StateRepository extends BaseRepository<State> {
   constructor(private dataSource: DataSource) {
     super(State, dataSource.createEntityManager());
   }
+  findOneByName(name: string) {
+    return this.findOneBy({
+      name,
+    });
+  }
 }

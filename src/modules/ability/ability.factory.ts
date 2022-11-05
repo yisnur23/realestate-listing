@@ -6,7 +6,13 @@ import {
   createMongoAbility,
 } from '@casl/ability';
 import { Injectable } from '@nestjs/common';
+import { City } from '../address/city/entities/city.entity';
+import { Neighbourhood } from '../address/neighbourhood/entities/neighbourhood.entity';
+import { State } from '../address/state/entities/state.entity';
+import { Subcity } from '../address/subcity/entities/subcity.entity';
+import { Woreda } from '../address/woreda/entities/woreda.entity';
 import { User, UserRole } from '../profile/entities/user.entity';
+import { Tag } from '../tag/entities/tag.entity';
 
 export enum Action {
   Manage = 'manage',
@@ -16,7 +22,15 @@ export enum Action {
   Delete = 'delete',
 }
 
-export type Subjects = InferSubjects<typeof User> | 'all';
+export type Subjects =
+  | InferSubjects<typeof User>
+  | InferSubjects<typeof Tag>
+  | InferSubjects<typeof State>
+  | InferSubjects<typeof City>
+  | InferSubjects<typeof Subcity>
+  | InferSubjects<typeof Woreda>
+  | InferSubjects<typeof Neighbourhood>
+  | 'all';
 
 export type AppAbility = PureAbility<[Action, Subjects]>;
 

@@ -56,7 +56,7 @@ describe('TagController (e2e)', () => {
     });
   });
   describe(`${route}/:id (GET)`, () => {
-    it('returns an a tag', async () => {
+    it('returns a tag', async () => {
       const tag = await tagRepository.save(createTagDto);
       const response = await request(app.getHttpServer()).get(
         `${route}/${tag.id}`,
@@ -98,7 +98,7 @@ describe('TagController (e2e)', () => {
       expect(response.body.message).toBe(`tag name ${name} already exists.`);
     });
   });
-  describe(`${route}/:id (GET)`, () => {
+  describe(`${route}/:id (DELETE)`, () => {
     it('deletes a tag', async () => {
       const tag = await tagRepository.save(createTagDto);
       const response = await request(app.getHttpServer()).delete(

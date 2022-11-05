@@ -1,11 +1,21 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import {
+  ConflictException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { StateDto } from './dto/create-state.dto';
 import { StateRepository } from './state.repository';
 
 @Injectable()
 export class StateService {
   constructor(private stateRepository: StateRepository) {}
-  create(createStateDto: StateDto) {
+  async create(createStateDto: StateDto) {
+    const state = await this.stateRepository.findOneByName(createStateDto.name);
+    if (state) {
+      throw new ConflictException(
+        `state name ${createStateDto.name} already exists.`,
+      );
+    }
     return this.stateRepository.insert(createStateDto);
   }
 
@@ -25,6 +35,16 @@ export class StateService {
   }
 
   async update(id: string, updateStateDto: StateDto) {
+    const toBeUpdated = await this.findOne(id);
+    const stateByName = await this.stateRepository.findOneByName(
+      updateStateDto.name,
+    );
+    if (stateByName) {
+      if (stateByName.id !== toBeUpdated.id)
+        throw new ConflictException(
+          `state name ${updateStateDto.name} already exists.`,
+        );
+    }
     await this.findOne(id);
     return this.stateRepository.update(id, updateStateDto);
   }

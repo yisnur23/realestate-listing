@@ -1,4 +1,10 @@
-import { Entity, ManyToOne, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
+import {
+  Entity,
+  ManyToOne,
+  OneToMany,
+  PrimaryGeneratedColumn,
+  Column,
+} from 'typeorm';
 import { State } from '../../state/entities/state.entity';
 import { Subcity } from '../../subcity/entities/subcity.entity';
 import { Woreda } from '../../woreda/entities/woreda.entity';
@@ -7,6 +13,8 @@ import { Woreda } from '../../woreda/entities/woreda.entity';
 export class City {
   @PrimaryGeneratedColumn('uuid')
   id: string;
+  @Column()
+  name: string;
   @OneToMany(() => Subcity, (subcity) => subcity.city)
   subCities: Subcity[];
   @OneToMany(() => Woreda, (woreda) => woreda.city)

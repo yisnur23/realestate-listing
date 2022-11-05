@@ -46,14 +46,14 @@ import { AddressRoutes } from './address/address.routes';
   controllers: [AppController],
   providers: [
     AppService,
-    // {
-    //   provide: APP_GUARD,
-    //   useClass: AuthenticationGuard,
-    // },
-    // {
-    //   provide: APP_GUARD,
-    //   useClass: AbilitiesGuard,
-    // },
+    {
+      provide: APP_GUARD,
+      useClass: AuthenticationGuard,
+    },
+    {
+      provide: APP_GUARD,
+      useClass: AbilitiesGuard,
+    },
   ],
 })
 export class AppModule {}

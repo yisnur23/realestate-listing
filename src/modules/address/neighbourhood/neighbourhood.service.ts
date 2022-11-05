@@ -29,7 +29,7 @@ export class NeighbourhoodService {
   async findOne(id: string) {
     const state = await this.neighbourhoodRepository.findById(id);
     if (!state) {
-      throw new NotFoundException(`subcity with id ${id} not found`);
+      throw new NotFoundException(`neighbourhood with id ${id} not found`);
     }
     return state;
   }
