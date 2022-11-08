@@ -14,6 +14,7 @@ describe('CityController (e2e)', () => {
   let app: INestApplication;
   let woredaRepository: WoredaRepository;
   let neighbourhoodRepository: NeighbourhoodRepository;
+  let connection;
   const route = '/address/neighbourhoods';
   const id = crypto.randomUUID();
 
@@ -31,6 +32,7 @@ describe('CityController (e2e)', () => {
     neighbourhoodRepository = moduleFixture.get<NeighbourhoodRepository>(
       NeighbourhoodRepository,
     );
+    connection = woredaRepository.manager.connection;
     await app.init();
   });
 
@@ -118,7 +120,17 @@ describe('CityController (e2e)', () => {
     });
   });
 
+  afterEach(async () => {
+    const entities = connection.entityMetadatas;
+
+    for (const entity of entities) {
+      const repository = connection.getRepository(entity.name);
+      await repository.delete({});
+    }
+  });
+
   afterAll(async () => {
+    await connection.destroy();
     await app.close();
   });
 });

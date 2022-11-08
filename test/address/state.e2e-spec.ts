@@ -13,6 +13,7 @@ import { AddressRoutes } from '../../src/modules/address/address.routes';
 describe('StateController (e2e)', () => {
   let app: INestApplication;
   let stateRepository: StateRepository;
+  let connection;
   const route = '/address/states';
   const id = crypto.randomUUID();
   const createStateDto: StateDto = {
@@ -29,6 +30,7 @@ describe('StateController (e2e)', () => {
 
     app = moduleFixture.createNestApplication();
     stateRepository = moduleFixture.get<StateRepository>(StateRepository);
+    connection = stateRepository.manager.connection;
     await app.init();
   });
 
@@ -114,8 +116,16 @@ describe('StateController (e2e)', () => {
       expect(response.statusCode).toBe(200);
     });
   });
+  afterEach(async () => {
+    const entities = connection.entityMetadatas;
 
+    for (const entity of entities) {
+      const repository = connection.getRepository(entity.name);
+      await repository.delete({});
+    }
+  });
   afterAll(async () => {
+    await connection.destroy();
     await app.close();
   });
 });

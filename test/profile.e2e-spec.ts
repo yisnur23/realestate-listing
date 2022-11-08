@@ -16,6 +16,7 @@ import { AbilityModule } from '../src/modules/ability/ability.module';
 describe('ProfileController (e2e)', () => {
   let app: INestApplication;
   let profileRepository: ProfileRepository;
+  let connection;
   const route = '/profile/me';
   let user: User;
   const id = crypto.randomUUID();
@@ -47,7 +48,9 @@ describe('ProfileController (e2e)', () => {
 
     app = moduleFixture.createNestApplication();
     profileRepository = moduleFixture.get<ProfileRepository>(ProfileRepository);
+    connection = profileRepository.manager.connection;
     user = await profileRepository.save(createProfileDto);
+
     app.use((req, res, next) => {
       req.isAuthenticated = () => {
         return !!req.user;
@@ -158,8 +161,17 @@ describe('ProfileController (e2e)', () => {
       expect(updatedUser).toBe(null);
     });
   });
+  afterEach(async () => {
+    const entities = connection.entityMetadatas;
+
+    for (const entity of entities) {
+      const repository = connection.getRepository(entity.name);
+      await repository.delete({});
+    }
+  });
 
   afterAll(async () => {
+    await connection.destroy();
     await app.close();
   });
 });

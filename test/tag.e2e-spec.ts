@@ -11,6 +11,7 @@ import crypto from 'crypto';
 describe('TagController (e2e)', () => {
   let app: INestApplication;
   let tagRepository: TagRepository;
+  let connection;
   const route = '/tags';
   const id = crypto.randomUUID();
   const createTagDto: CreateTagDto = {
@@ -23,6 +24,7 @@ describe('TagController (e2e)', () => {
 
     app = moduleFixture.createNestApplication();
     tagRepository = moduleFixture.get<TagRepository>(TagRepository);
+    connection = tagRepository.manager.connection;
     await app.init();
   });
 
@@ -108,8 +110,16 @@ describe('TagController (e2e)', () => {
       expect(response.statusCode).toBe(200);
     });
   });
+  afterEach(async () => {
+    const entities = connection.entityMetadatas;
 
+    for (const entity of entities) {
+      const repository = connection.getRepository(entity.name);
+      await repository.delete({});
+    }
+  });
   afterAll(async () => {
+    await connection.destroy();
     await app.close();
   });
 });

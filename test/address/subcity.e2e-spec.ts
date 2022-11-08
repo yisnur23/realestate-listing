@@ -15,6 +15,7 @@ describe('SubcityController (e2e)', () => {
   let app: INestApplication;
   let cityRepository: CityRepository;
   let subcityRepository: SubCityRepository;
+  let connection;
   const route = '/address/subcities';
   const id = crypto.randomUUID();
   const createSubcityDto: CreateSubcityDto = {
@@ -33,6 +34,7 @@ describe('SubcityController (e2e)', () => {
     app = moduleFixture.createNestApplication();
     cityRepository = moduleFixture.get<CityRepository>(CityRepository);
     subcityRepository = moduleFixture.get<SubCityRepository>(SubCityRepository);
+    connection = subcityRepository.manager.connection;
     await app.init();
   });
 
@@ -123,8 +125,16 @@ describe('SubcityController (e2e)', () => {
       expect(response.statusCode).toBe(200);
     });
   });
+  afterEach(async () => {
+    const entities = connection.entityMetadatas;
 
+    for (const entity of entities) {
+      const repository = connection.getRepository(entity.name);
+      await repository.delete({});
+    }
+  });
   afterAll(async () => {
+    await connection.destroy();
     await app.close();
   });
 });

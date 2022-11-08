@@ -17,6 +17,7 @@ describe('WoredaController (e2e)', () => {
   let woredaRepository: WoredaRepository;
   let cityRepository: CityRepository;
   let subcityRepository: SubCityRepository;
+  let connection;
   const route = '/address/woredas';
   const id = crypto.randomUUID();
   const createWoredaDto: CreateWoredaDto = {
@@ -37,6 +38,7 @@ describe('WoredaController (e2e)', () => {
     cityRepository = moduleFixture.get<CityRepository>(CityRepository);
     subcityRepository = moduleFixture.get<SubCityRepository>(SubCityRepository);
     woredaRepository = moduleFixture.get<WoredaRepository>(WoredaRepository);
+    connection = subcityRepository.manager.connection;
     await app.init();
   });
 
@@ -136,8 +138,16 @@ describe('WoredaController (e2e)', () => {
       expect(response.statusCode).toBe(200);
     });
   });
+  afterEach(async () => {
+    const entities = connection.entityMetadatas;
 
+    for (const entity of entities) {
+      const repository = connection.getRepository(entity.name);
+      await repository.delete({});
+    }
+  });
   afterAll(async () => {
+    await connection.destroy();
     await app.close();
   });
 });
