@@ -35,6 +35,7 @@ describe('CityController (e2e)', () => {
     cityRepository = moduleFixture.get<CityRepository>(CityRepository);
     stateRepository = moduleFixture.get<StateRepository>(StateRepository);
     connection = cityRepository.manager.connection;
+
     await app.init();
   });
 
@@ -56,8 +57,11 @@ describe('CityController (e2e)', () => {
       const state = await stateRepository.save({
         name: 'state_name',
       });
-      createCityDto.state_id = state.id;
-      const city = await cityRepository.save(createCityDto);
+
+      const city = await cityRepository.save({
+        name: 'city_name',
+        state,
+      });
       const response = await request(app.getHttpServer()).get(route);
 
       expect(response.statusCode).toBe(200);
@@ -74,8 +78,11 @@ describe('CityController (e2e)', () => {
       const state = await stateRepository.save({
         name: 'state_name',
       });
-      createCityDto.state_id = state.id;
-      const city = await cityRepository.save(createCityDto);
+
+      const city = await cityRepository.save({
+        name: 'city_name',
+        state,
+      });
       const response = await request(app.getHttpServer()).get(
         `${route}/${city.id}`,
       );
@@ -100,8 +107,11 @@ describe('CityController (e2e)', () => {
       const state = await stateRepository.save({
         name: 'state_name',
       });
-      createCityDto.state_id = state.id;
-      const city = await cityRepository.save(createCityDto);
+
+      const city = await cityRepository.save({
+        name: 'city_name',
+        state,
+      });
       const response = await request(app.getHttpServer())
         .patch(`${route}/${city.id}`)
         .send({
@@ -116,8 +126,11 @@ describe('CityController (e2e)', () => {
       const state = await stateRepository.save({
         name: 'state_name',
       });
-      createCityDto.state_id = state.id;
-      const city = await cityRepository.save(createCityDto);
+
+      const city = await cityRepository.save({
+        name: 'city_name',
+        state,
+      });
       const response = await request(app.getHttpServer()).delete(
         `${route}/${city.id}`,
       );

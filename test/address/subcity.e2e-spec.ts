@@ -10,11 +10,13 @@ import { AddressRoutes } from '../../src/modules/address/address.routes';
 import { CityRepository } from '../../src/modules/address/city/city.repository';
 import { SubCityRepository } from '../../src/modules/address/subcity/subcity.repository';
 import { CreateSubcityDto } from '../../src/modules/address/subcity/dto/create-subcity.dto';
+import { StateRepository } from '../../src/modules/address/state/state.repository';
 
 describe('SubcityController (e2e)', () => {
   let app: INestApplication;
   let cityRepository: CityRepository;
   let subcityRepository: SubCityRepository;
+  let stateRepository: StateRepository;
   let connection;
   const route = '/address/subcities';
   const id = crypto.randomUUID();
@@ -34,14 +36,20 @@ describe('SubcityController (e2e)', () => {
     app = moduleFixture.createNestApplication();
     cityRepository = moduleFixture.get<CityRepository>(CityRepository);
     subcityRepository = moduleFixture.get<SubCityRepository>(SubCityRepository);
+    stateRepository = moduleFixture.get<StateRepository>(StateRepository);
     connection = subcityRepository.manager.connection;
+
     await app.init();
   });
 
   describe(`${route} (POST)`, () => {
     it('creates a subcity', async () => {
+      const state = await stateRepository.save({
+        name: 'state_name',
+      });
       const city = await cityRepository.save({
         name: 'city_name',
+        state,
       });
       createSubcityDto.city_id = city.id;
       const response = await request(app.getHttpServer())
@@ -53,11 +61,17 @@ describe('SubcityController (e2e)', () => {
   });
   describe(`${route} (GET)`, () => {
     it('returns an array of subcities', async () => {
+      const state = await stateRepository.save({
+        name: 'state_name',
+      });
       const city = await cityRepository.save({
         name: 'city_name',
+        state,
       });
-      createSubcityDto.city_id = city.id;
-      const subcity = await subcityRepository.save(createSubcityDto);
+      const subcity = await subcityRepository.save({
+        name: 'subcity_name',
+        city,
+      });
       const response = await request(app.getHttpServer()).get(route);
 
       expect(response.statusCode).toBe(200);
@@ -71,11 +85,17 @@ describe('SubcityController (e2e)', () => {
   });
   describe(`${route}/:id (GET)`, () => {
     it('returns a subcity', async () => {
+      const state = await stateRepository.save({
+        name: 'state_name',
+      });
       const city = await cityRepository.save({
         name: 'city_name',
+        state,
       });
-      createSubcityDto.city_id = city.id;
-      const subcity = await subcityRepository.save(createSubcityDto);
+      const subcity = await subcityRepository.save({
+        name: 'subcity_name',
+        city,
+      });
       const response = await request(app.getHttpServer()).get(
         `${route}/${subcity.id}`,
       );
@@ -97,11 +117,18 @@ describe('SubcityController (e2e)', () => {
 
   describe(`${route}/:id (PATCH)`, () => {
     it('updates a subcity', async () => {
+      const state = await stateRepository.save({
+        name: 'state_name',
+      });
       const city = await cityRepository.save({
         name: 'city_name',
+        state,
       });
-      createSubcityDto.city_id = city.id;
-      const subcity = await subcityRepository.save(createSubcityDto);
+
+      const subcity = await subcityRepository.save({
+        name: 'subcity_name',
+        city,
+      });
       const response = await request(app.getHttpServer())
         .patch(`${route}/${subcity.id}`)
         .send({
@@ -113,11 +140,17 @@ describe('SubcityController (e2e)', () => {
   });
   describe(`${route}/:id (DELETE)`, () => {
     it('deletes a subcity', async () => {
+      const state = await stateRepository.save({
+        name: 'state_name',
+      });
       const city = await cityRepository.save({
         name: 'city_name',
+        state,
       });
-      createSubcityDto.city_id = city.id;
-      const subcity = await subcityRepository.save(createSubcityDto);
+      const subcity = await subcityRepository.save({
+        name: 'subcity_name',
+        city,
+      });
       const response = await request(app.getHttpServer()).delete(
         `${route}/${subcity.id}`,
       );

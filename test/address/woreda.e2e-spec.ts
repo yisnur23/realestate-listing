@@ -11,12 +11,14 @@ import { CityRepository } from '../../src/modules/address/city/city.repository';
 import { SubCityRepository } from '../../src/modules/address/subcity/subcity.repository';
 import { CreateWoredaDto } from '../../src/modules/address/woreda/dto/create-woreda.dto';
 import { WoredaRepository } from '../../src/modules/address/woreda/woreda.repository';
+import { StateRepository } from '../../src/modules/address/state/state.repository';
 
 describe('WoredaController (e2e)', () => {
   let app: INestApplication;
   let woredaRepository: WoredaRepository;
   let cityRepository: CityRepository;
   let subcityRepository: SubCityRepository;
+  let stateRepository: StateRepository;
   let connection;
   const route = '/address/woredas';
   const id = crypto.randomUUID();
@@ -35,17 +37,23 @@ describe('WoredaController (e2e)', () => {
     }).compile();
 
     app = moduleFixture.createNestApplication();
+    stateRepository = moduleFixture.get<StateRepository>(StateRepository);
     cityRepository = moduleFixture.get<CityRepository>(CityRepository);
     subcityRepository = moduleFixture.get<SubCityRepository>(SubCityRepository);
     woredaRepository = moduleFixture.get<WoredaRepository>(WoredaRepository);
     connection = subcityRepository.manager.connection;
+
     await app.init();
   });
 
   describe(`${route} (POST)`, () => {
     it('creates a woreda that belongs to a city', async () => {
+      const state = await stateRepository.save({
+        name: 'state_name',
+      });
       const city = await cityRepository.save({
         name: 'city_name',
+        state,
       });
       createWoredaDto.city_id = city.id;
       const response = await request(app.getHttpServer()).post(route).send({
@@ -56,12 +64,17 @@ describe('WoredaController (e2e)', () => {
       expect(response.statusCode).toBe(201);
     });
     it('creates a woreda that belongs to a subcity', async () => {
+      const state = await stateRepository.save({
+        name: 'state_name',
+      });
+
       const city = await cityRepository.save({
         name: 'city_name',
+        state,
       });
       const subcity = await subcityRepository.save({
         name: 'subcity_name',
-        city_id: city.id,
+        city,
       });
       createWoredaDto.subcity_id = subcity.id;
       const response = await request(app.getHttpServer()).post(route).send({
@@ -72,10 +85,20 @@ describe('WoredaController (e2e)', () => {
       expect(response.statusCode).toBe(201);
     });
   });
+
   describe(`${route} (GET)`, () => {
     it('returns an array of woredas', async () => {
+      const state = await stateRepository.save({
+        name: 'state_name',
+      });
+
+      const city = await cityRepository.save({
+        name: 'city_name',
+        state,
+      });
       const woreda = await woredaRepository.save({
         name: 'woreda',
+        city,
       });
       const response = await request(app.getHttpServer()).get(route);
 
@@ -90,8 +113,17 @@ describe('WoredaController (e2e)', () => {
   });
   describe(`${route}/:id (GET)`, () => {
     it('returns a woreda', async () => {
+      const state = await stateRepository.save({
+        name: 'state_name',
+      });
+
+      const city = await cityRepository.save({
+        name: 'city_name',
+        state,
+      });
       const woreda = await woredaRepository.save({
-        name: 'woreda_name',
+        name: 'woreda',
+        city,
       });
       const response = await request(app.getHttpServer()).get(
         `${route}/${woreda.id}`,
@@ -114,8 +146,17 @@ describe('WoredaController (e2e)', () => {
 
   describe(`${route}/:id (PATCH)`, () => {
     it('updates a woreda', async () => {
+      const state = await stateRepository.save({
+        name: 'state_name',
+      });
+
+      const city = await cityRepository.save({
+        name: 'city_name',
+        state,
+      });
       const woreda = await woredaRepository.save({
-        name: 'woreda_name',
+        name: 'woreda',
+        city,
       });
       const response = await request(app.getHttpServer())
         .patch(`${route}/${woreda.id}`)
@@ -128,8 +169,17 @@ describe('WoredaController (e2e)', () => {
   });
   describe(`${route}/:id (DELETE)`, () => {
     it('deletes a woreda', async () => {
+      const state = await stateRepository.save({
+        name: 'state_name',
+      });
+
+      const city = await cityRepository.save({
+        name: 'city_name',
+        state,
+      });
       const woreda = await woredaRepository.save({
-        name: 'woreda_name',
+        name: 'woreda',
+        city,
       });
       const response = await request(app.getHttpServer()).delete(
         `${route}/${woreda.id}`,

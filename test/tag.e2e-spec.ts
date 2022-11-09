@@ -25,6 +25,7 @@ describe('TagController (e2e)', () => {
     app = moduleFixture.createNestApplication();
     tagRepository = moduleFixture.get<TagRepository>(TagRepository);
     connection = tagRepository.manager.connection;
+
     await app.init();
   });
 
@@ -38,9 +39,10 @@ describe('TagController (e2e)', () => {
     });
     it('returns a conflict error if a tag name already exists', async () => {
       await tagRepository.save(createTagDto);
-      const response = await request(app.getHttpServer())
-        .post(route)
-        .send(createTagDto);
+      const response = await request(app.getHttpServer()).post(route).send({
+        name: 'tag_name',
+      });
+
       expect(response.statusCode).toBe(409);
       expect(response.body).toHaveProperty('message');
       expect(response.body.message).toBe(
@@ -81,7 +83,9 @@ describe('TagController (e2e)', () => {
       const tag = await tagRepository.save(createTagDto);
       const response = await request(app.getHttpServer())
         .patch(`${route}/${tag.id}`)
-        .send(createTagDto);
+        .send({
+          name: 'tag_name',
+        });
 
       expect(response.statusCode).toBe(200);
     });

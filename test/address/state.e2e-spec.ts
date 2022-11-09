@@ -31,6 +31,7 @@ describe('StateController (e2e)', () => {
     app = moduleFixture.createNestApplication();
     stateRepository = moduleFixture.get<StateRepository>(StateRepository);
     connection = stateRepository.manager.connection;
+
     await app.init();
   });
 

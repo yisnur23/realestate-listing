@@ -9,11 +9,15 @@ import { RouterModule } from '@nestjs/core';
 import { AddressRoutes } from '../../src/modules/address/address.routes';
 import { WoredaRepository } from '../../src/modules/address/woreda/woreda.repository';
 import { NeighbourhoodRepository } from '../../src/modules/address/neighbourhood/neighbourhood.repository';
+import { CityRepository } from '../../src/modules/address/city/city.repository';
+import { StateRepository } from '../../src/modules/address/state/state.repository';
 
 describe('CityController (e2e)', () => {
   let app: INestApplication;
   let woredaRepository: WoredaRepository;
   let neighbourhoodRepository: NeighbourhoodRepository;
+  let cityRepository: CityRepository;
+  let stateRepository: StateRepository;
   let connection;
   const route = '/address/neighbourhoods';
   const id = crypto.randomUUID();
@@ -28,18 +32,29 @@ describe('CityController (e2e)', () => {
     }).compile();
 
     app = moduleFixture.createNestApplication();
+    stateRepository = moduleFixture.get<StateRepository>(StateRepository);
+    cityRepository = moduleFixture.get<CityRepository>(CityRepository);
     woredaRepository = moduleFixture.get<WoredaRepository>(WoredaRepository);
     neighbourhoodRepository = moduleFixture.get<NeighbourhoodRepository>(
       NeighbourhoodRepository,
     );
     connection = woredaRepository.manager.connection;
+
     await app.init();
   });
 
   describe(`${route} (POST)`, () => {
     it('creates a neigbourhod', async () => {
+      const state = await stateRepository.save({
+        name: 'state_name',
+      });
+      const city = await cityRepository.save({
+        name: 'city_name',
+        state,
+      });
       const woreda = await woredaRepository.save({
         name: 'state_name',
+        city,
       });
       const response = await request(app.getHttpServer()).post(route).send({
         name: 'name',
@@ -51,8 +66,20 @@ describe('CityController (e2e)', () => {
   });
   describe(`${route} (GET)`, () => {
     it('returns an array of neighbourhoods', async () => {
+      const state = await stateRepository.save({
+        name: 'state_name',
+      });
+      const city = await cityRepository.save({
+        name: 'city_name',
+        state,
+      });
+      const woreda = await woredaRepository.save({
+        name: 'state_name',
+        city,
+      });
       const nh = await neighbourhoodRepository.save({
         name: 'name',
+        woreda,
       });
       const response = await request(app.getHttpServer()).get(route);
 
@@ -67,8 +94,20 @@ describe('CityController (e2e)', () => {
   });
   describe(`${route}/:id (GET)`, () => {
     it('returns a neighbourhood', async () => {
+      const state = await stateRepository.save({
+        name: 'state_name',
+      });
+      const city = await cityRepository.save({
+        name: 'city_name',
+        state,
+      });
+      const woreda = await woredaRepository.save({
+        name: 'state_name',
+        city,
+      });
       const nh = await neighbourhoodRepository.save({
         name: 'name',
+        woreda,
       });
 
       const response = await request(app.getHttpServer()).get(
@@ -94,8 +133,20 @@ describe('CityController (e2e)', () => {
 
   describe(`${route}/:id (PATCH)`, () => {
     it('updates a neighbourhood', async () => {
+      const state = await stateRepository.save({
+        name: 'state_name',
+      });
+      const city = await cityRepository.save({
+        name: 'city_name',
+        state,
+      });
+      const woreda = await woredaRepository.save({
+        name: 'state_name',
+        city,
+      });
       const nh = await neighbourhoodRepository.save({
         name: 'name',
+        woreda,
       });
       const response = await request(app.getHttpServer())
         .patch(`${route}/${nh.id}`)
@@ -108,8 +159,20 @@ describe('CityController (e2e)', () => {
   });
   describe(`${route}/:id (DELETE)`, () => {
     it('deletes a neighbourhood', async () => {
+      const state = await stateRepository.save({
+        name: 'state_name',
+      });
+      const city = await cityRepository.save({
+        name: 'city_name',
+        state,
+      });
+      const woreda = await woredaRepository.save({
+        name: 'state_name',
+        city,
+      });
       const nh = await neighbourhoodRepository.save({
         name: 'name',
+        woreda,
       });
 
       const response = await request(app.getHttpServer()).delete(
