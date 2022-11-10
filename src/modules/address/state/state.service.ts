@@ -16,7 +16,7 @@ export class StateService {
         `state name ${createStateDto.name} already exists.`,
       );
     }
-    return this.stateRepository.insert(createStateDto);
+    this.stateRepository.insert(createStateDto);
   }
 
   findAll(take = 20, skip = 0) {
@@ -46,11 +46,11 @@ export class StateService {
         );
     }
     await this.findOne(id);
-    return this.stateRepository.update(id, updateStateDto);
+    this.stateRepository.update(id, updateStateDto);
   }
 
   async remove(id: string) {
     await this.findOne(id);
-    return this.stateRepository.delete(id);
+    this.stateRepository.delete(id);
   }
 }

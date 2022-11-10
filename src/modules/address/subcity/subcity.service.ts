@@ -13,7 +13,7 @@ export class SubcityService {
   async create(createSubcityDto: CreateSubcityDto) {
     const { city_id, ...body } = createSubcityDto;
     const city = await this.cityService.findOne(city_id);
-    return this.subcityRepository.insert({
+    this.subcityRepository.insert({
       ...body,
       city,
     });
@@ -47,11 +47,11 @@ export class SubcityService {
         city,
       };
     }
-    return this.subcityRepository.update(id, update);
+    this.subcityRepository.update(id, update);
   }
 
   async remove(id: string) {
     await this.findOne(id);
-    return this.subcityRepository.delete(id);
+    this.subcityRepository.delete(id);
   }
 }

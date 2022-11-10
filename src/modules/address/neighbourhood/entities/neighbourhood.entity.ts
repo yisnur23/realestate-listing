@@ -7,6 +7,9 @@ export class Neighbourhood {
   id: string;
   @Column()
   name: string;
-  @ManyToOne(() => Woreda, (woreda) => woreda.neighbourhoods)
+  @ManyToOne(() => Woreda, (woreda) => woreda.neighbourhoods, {
+    nullable: false,
+    onDelete: 'SET NULL',
+  })
   woreda: Woreda;
 }

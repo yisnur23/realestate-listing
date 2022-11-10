@@ -19,6 +19,9 @@ export class City {
   subCities: Subcity[];
   @OneToMany(() => Woreda, (woreda) => woreda.city)
   woredas: Woreda[];
-  @ManyToOne(() => State, (state) => state.cities)
+  @ManyToOne(() => State, (state) => state.cities, {
+    nullable: false,
+    onDelete: 'SET NULL',
+  })
   state: State;
 }

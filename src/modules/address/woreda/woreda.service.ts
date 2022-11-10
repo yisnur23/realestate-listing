@@ -31,7 +31,7 @@ export class WoredaService {
       };
     }
 
-    return this.wordaRepository.insert(woredaBody);
+    this.wordaRepository.insert(woredaBody);
   }
 
   findAll(take = 20, skip = 0) {
@@ -68,11 +68,11 @@ export class WoredaService {
       };
     }
 
-    return this.wordaRepository.insert(woredaBody);
+    this.wordaRepository.insert(woredaBody);
   }
 
   async remove(id: string) {
     await this.findOne(id);
-    return this.wordaRepository.delete(id);
+    this.wordaRepository.delete(id);
   }
 }

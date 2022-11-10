@@ -13,7 +13,7 @@ export class NeighbourhoodService {
   async create(createSubcityDto: CreateNeighbourhoodDto) {
     const { woreda_id, ...body } = createSubcityDto;
     const woreda = await this.woredaService.findOne(woreda_id);
-    return this.neighbourhoodRepository.insert({
+    this.neighbourhoodRepository.insert({
       ...body,
       woreda,
     });
@@ -47,11 +47,11 @@ export class NeighbourhoodService {
         city,
       };
     }
-    return this.neighbourhoodRepository.update(id, update);
+    this.neighbourhoodRepository.update(id, update);
   }
 
   async remove(id: string) {
     await this.findOne(id);
-    return this.neighbourhoodRepository.delete(id);
+    this.neighbourhoodRepository.delete(id);
   }
 }

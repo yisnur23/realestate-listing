@@ -13,7 +13,7 @@ export class CityService {
   async create(createCityDto: CreateCityDto) {
     const { state_id, ...body } = createCityDto;
     const state = await this.stateService.findOne(state_id);
-    return this.cityRepository.insert({
+    this.cityRepository.insert({
       ...body,
       state,
     });
@@ -47,11 +47,11 @@ export class CityService {
         state,
       };
     }
-    return this.cityRepository.update(id, update);
+    this.cityRepository.update(id, update);
   }
 
   async remove(id: string) {
     await this.findOne(id);
-    return this.cityRepository.delete(id);
+    this.cityRepository.delete(id);
   }
 }

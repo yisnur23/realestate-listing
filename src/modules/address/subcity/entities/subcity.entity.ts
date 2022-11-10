@@ -16,6 +16,9 @@ export class Subcity {
   name: string;
   @OneToMany(() => Woreda, (woreda) => woreda.subcity)
   woredas: Woreda[];
-  @ManyToOne(() => City, (city) => city.subCities)
+  @ManyToOne(() => City, (city) => city.subCities, {
+    nullable: false,
+    onDelete: 'SET NULL',
+  })
   city: City;
 }

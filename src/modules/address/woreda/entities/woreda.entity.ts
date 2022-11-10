@@ -17,8 +17,10 @@ export class Woreda {
   name: string;
   @OneToMany(() => Neighbourhood, (neighbourhood) => neighbourhood.woreda)
   neighbourhoods: Neighbourhood[];
-  @ManyToOne(() => Subcity, (subcity) => subcity.woredas)
+  @ManyToOne(() => Subcity, (subcity) => subcity.woredas, {
+    onDelete: 'SET NULL',
+  })
   subcity: Subcity;
-  @ManyToOne(() => City, (city) => city.woredas)
+  @ManyToOne(() => City, (city) => city.woredas, { onDelete: 'SET NULL' })
   city: City;
 }
