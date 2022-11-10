@@ -1,4 +1,4 @@
-import { DataSource } from 'typeorm';
+import { DataSource, In } from 'typeorm';
 import { Injectable } from '@nestjs/common';
 import { Tag } from './entities/tag.entity';
 import { BaseRepository } from '../../common/classes';
@@ -11,6 +11,11 @@ export class TagRepository extends BaseRepository<Tag> {
   findOneByName(name: string) {
     return this.findOneBy({
       name,
+    });
+  }
+  findWithIds(ids: string[]) {
+    return this.findBy({
+      id: In(ids),
     });
   }
 }

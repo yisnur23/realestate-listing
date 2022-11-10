@@ -1,4 +1,11 @@
-import { PrimaryGeneratedColumn, Entity, Column } from 'typeorm';
+import {
+  PrimaryGeneratedColumn,
+  Entity,
+  Column,
+  OneToMany,
+  ManyToMany,
+} from 'typeorm';
+import { Listing } from '../../listing/entities/listing.entity';
 
 export enum UserRole {
   ADMIN = 'admin',
@@ -18,7 +25,7 @@ export class User {
   })
   display_name: string;
   @Column({
-    type: 'simple-enum',
+    type: 'enum',
     enum: UserRole,
     default: UserRole.USER,
   })
@@ -48,4 +55,8 @@ export class User {
     nullable: true,
   })
   profile_picture: string;
+  @OneToMany(() => Listing, (listing) => listing.user)
+  listings: Listing[];
+  @ManyToMany(() => Listing)
+  favorites: Listing[];
 }

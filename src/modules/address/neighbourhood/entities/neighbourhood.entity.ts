@@ -1,4 +1,11 @@
-import { Column, Entity, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
+import {
+  Column,
+  Entity,
+  ManyToOne,
+  OneToMany,
+  PrimaryGeneratedColumn,
+} from 'typeorm';
+import { Listing } from '../../../listing/entities/listing.entity';
 import { Woreda } from '../../woreda/entities/woreda.entity';
 
 @Entity()
@@ -12,4 +19,6 @@ export class Neighbourhood {
     onDelete: 'SET NULL',
   })
   woreda: Woreda;
+  @OneToMany(() => Listing, (listing) => listing.neighbourhood)
+  listings: Listing[];
 }

@@ -9,6 +9,7 @@ import { CreateProfileDto } from './dto/profile.dto';
 import { User } from './entities/user.entity';
 import { ProfileRepository } from './profile.repository';
 import { pick } from '../../common/utils';
+import { ListingService } from '../listing/listing.service';
 
 @Injectable()
 export class ProfileService {
@@ -27,6 +28,7 @@ export class ProfileService {
   constructor(
     private profileRepository: ProfileRepository,
     private abilityFactory: AbilityFactory,
+    private listingService: ListingService,
   ) {}
 
   async createUser(user: CreateProfileDto) {
@@ -84,5 +86,23 @@ export class ProfileService {
 
   findUserByEmail(email: string): Promise<User> {
     return this.profileRepository.findUserByEmail(email);
+  }
+
+  async addFavoriteListing(listingId: string, userId: string) {
+    const profile = await this.findOne(userId);
+    const listing = await this.listingService.findOne(listingId);
+    if (!profile.favorites) {
+      profile.favorites = [];
+    }
+    profile.favorites.push(listing);
+    this.profileRepository.save(profile);
+  }
+  async removeFavoriteListing(listingId: string, userId: string) {
+    const profile = await this.findOne(userId);
+    if (!profile.favorites) {
+      profile.favorites = [];
+    }
+    profile.favorites.filter((listing) => listing.id !== listingId);
+    this.profileRepository.save(profile);
   }
 }

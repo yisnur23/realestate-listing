@@ -27,6 +27,9 @@ export class TagService {
       skip,
     });
   }
+  async findByIds(ids: string[]) {
+    return this.tagRepository.findWithIds(ids);
+  }
 
   async findOne(id: string) {
     const tag = await this.tagRepository.findById(id);

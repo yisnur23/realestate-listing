@@ -15,6 +15,7 @@ import { AbilitiesGuard } from './ability/ability.guard';
 import { AuthenticationGuard } from './auth/auth.guard';
 import { AddressModule } from './address/address.module';
 import { AddressRoutes } from './address/address.routes';
+import { ListingModule } from './listing/listing.module';
 
 @Module({
   imports: [
@@ -42,6 +43,7 @@ import { AddressRoutes } from './address/address.routes';
     AbilityModule,
     AddressModule,
     RouterModule.register(AddressRoutes),
+    ListingModule,
   ],
   controllers: [AppController],
   providers: [
