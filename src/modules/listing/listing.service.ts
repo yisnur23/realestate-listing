@@ -4,6 +4,7 @@ import {
   Injectable,
   NotFoundException,
 } from '@nestjs/common';
+import { Point } from 'geojson';
 
 import { NeighbourhoodService } from '../address/neighbourhood/neighbourhood.service';
 import { ProfileService } from '../profile/profile.service';
@@ -23,7 +24,13 @@ export class ListingService {
   ) {}
 
   async create(createListingDto: CreateListingDto, userId) {
-    const { tags: tagsArray, neighbourhood_id, ...body } = createListingDto;
+    const {
+      tags: tagsArray,
+      neighbourhood_id,
+      longitude,
+      latitude,
+      ...body
+    } = createListingDto;
     const user = await this.profileService.findOne(userId);
     let listingBody: any = {
       ...body,
@@ -45,7 +52,17 @@ export class ListingService {
         tags,
       };
     }
-    this.listingRepository.save(listingBody);
+    if (longitude && latitude) {
+      const location: Point = {
+        type: 'Point',
+        coordinates: [longitude, latitude],
+      };
+      listingBody = {
+        ...listingBody,
+        location,
+      };
+    }
+    this.listingRepository.insert(listingBody);
   }
 
   findAll(take = 20, skip = 0) {
@@ -64,19 +81,45 @@ export class ListingService {
   }
 
   async update(id: string, updateListingDto: UpdateListingDto) {
-    const { tags: tagsArray, ...body } = updateListingDto;
-    let update: any = {
+    const {
+      tags: tagsArray,
+      neighbourhood_id,
+      longitude,
+      latitude,
+      ...body
+    } = updateListingDto;
+    await this.findOne(id);
+
+    let listingBody: any = {
       ...body,
     };
-    await this.findOne(id);
+    if (neighbourhood_id) {
+      const neighbourhood = await this.neighbourhoodService.findOne(
+        neighbourhood_id,
+      );
+      listingBody = {
+        ...listingBody,
+        neighbourhood,
+      };
+    }
     if (tagsArray?.length) {
       const tags = await this.tagService.findByIds(tagsArray);
-      update = {
-        ...update,
+      listingBody = {
+        ...listingBody,
         tags,
       };
     }
-    this.listingRepository.update(id, update);
+    if (longitude && latitude) {
+      const location: Point = {
+        type: 'Point',
+        coordinates: [longitude, latitude],
+      };
+      listingBody = {
+        ...listingBody,
+        location,
+      };
+    }
+    this.listingRepository.update(id, listingBody);
   }
 
   async remove(id: string) {

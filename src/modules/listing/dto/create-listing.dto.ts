@@ -1,4 +1,10 @@
-import { IsOptional, IsUUID, Length, Min } from 'class-validator';
+import {
+  IsOptional,
+  IsUUID,
+  Length,
+  IsLatitude,
+  IsLongitude,
+} from 'class-validator';
 
 export class CreateListingDto {
   @Length(2, 80)
@@ -27,4 +33,9 @@ export class CreateListingDto {
   @IsOptional()
   @IsUUID('4')
   neighbourhood_id: string;
+  @IsOptional()
+  @IsLatitude()
+  latitude: number;
+  @IsLongitude()
+  longitude: number;
 }

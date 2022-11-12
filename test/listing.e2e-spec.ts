@@ -5,8 +5,6 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { testingDbConfig } from './testing-db-config';
 import crypto from 'crypto';
 import { AddressModule } from '../src/modules/address/address.module';
-import { RouterModule } from '@nestjs/core';
-import { AddressRoutes } from '../src/modules/address/address.routes';
 import { WoredaRepository } from '../src/modules/address/woreda/woreda.repository';
 import { NeighbourhoodRepository } from '../src/modules/address/neighbourhood/neighbourhood.repository';
 import { CityRepository } from '../src/modules/address/city/city.repository';
@@ -54,6 +52,8 @@ describe('ListingsController (e2e)', () => {
     number_of_floors: 2,
     tags: [],
     neighbourhood_id: undefined,
+    longitude: 8.952527884084251,
+    latitude: 38.719688455534026,
   };
   const route = '/listings';
   const id = crypto.randomUUID();
