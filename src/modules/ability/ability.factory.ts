@@ -11,6 +11,7 @@ import { Neighbourhood } from '../address/neighbourhood/entities/neighbourhood.e
 import { State } from '../address/state/entities/state.entity';
 import { Subcity } from '../address/subcity/entities/subcity.entity';
 import { Woreda } from '../address/woreda/entities/woreda.entity';
+import { Listing } from '../listing/entities/listing.entity';
 import { User, UserRole } from '../profile/entities/user.entity';
 import { Tag } from '../tag/entities/tag.entity';
 
@@ -25,6 +26,7 @@ export enum Action {
 export type Subjects =
   | InferSubjects<typeof User>
   | InferSubjects<typeof Tag>
+  | InferSubjects<typeof Listing>
   | InferSubjects<typeof State>
   | InferSubjects<typeof City>
   | InferSubjects<typeof Subcity>

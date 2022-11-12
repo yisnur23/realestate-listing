@@ -9,6 +9,8 @@ export class Tag {
     unique: true,
   })
   name: string;
-  @ManyToMany(() => Listing, (listing) => listing.tags)
+  @ManyToMany(() => Listing, (listing) => listing.tags, {
+    onDelete: 'CASCADE',
+  })
   listings: Listing[];
 }

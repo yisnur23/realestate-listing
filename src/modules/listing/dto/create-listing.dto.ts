@@ -3,7 +3,7 @@ import { IsOptional, IsUUID, Length, Min } from 'class-validator';
 export class CreateListingDto {
   @Length(2, 80)
   title: string;
-  @Min(3)
+  @Length(2)
   description: string;
   @IsOptional()
   price: number;
@@ -24,4 +24,7 @@ export class CreateListingDto {
   @IsOptional()
   @IsUUID('4', { each: true })
   tags: string[];
+  @IsOptional()
+  @IsUUID('4')
+  neighbourhood_id: string;
 }

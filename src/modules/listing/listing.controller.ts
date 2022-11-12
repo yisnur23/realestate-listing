@@ -1,34 +1,57 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Post,
+  Body,
+  Patch,
+  Param,
+  Delete,
+  Req,
+  Query,
+  ParseUUIDPipe,
+} from '@nestjs/common';
 import { ListingService } from './listing.service';
 import { CreateListingDto } from './dto/create-listing.dto';
 import { UpdateListingDto } from './dto/update-listing.dto';
+import { CheckAbilities } from '../ability/ability.decorator';
+import { ListingAbility } from './listing.abilities';
+import { Public } from '../auth/auth.decorator';
 
-@Controller('listing')
+@Controller('listings')
 export class ListingController {
   constructor(private readonly listingService: ListingService) {}
 
   @Post()
-  create(@Body() createListingDto: CreateListingDto) {
-    return this.listingService.create(createListingDto);
+  @CheckAbilities(ListingAbility.Create)
+  create(@Req() req, @Body() createListingDto: CreateListingDto) {
+    const user = req.user;
+    return this.listingService.create(createListingDto, user.id);
   }
 
   @Get()
-  findAll() {
-    return this.listingService.findAll();
+  @Public()
+  findAll(@Query('take') take: number, @Query('skip') skip: number) {
+    return this.listingService.findAll(take, skip);
   }
 
   @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.listingService.findOne(+id);
+  @Public()
+  findOne(@Param('id', ParseUUIDPipe) id: string) {
+    return this.listingService.findOne(id);
   }
 
   @Patch(':id')
-  update(@Param('id') id: string, @Body() updateListingDto: UpdateListingDto) {
-    return this.listingService.update(+id, updateListingDto);
+  @CheckAbilities(ListingAbility.Update)
+  update(
+    @Param('id', ParseUUIDPipe) id: string,
+    @Body() updateListingDto: UpdateListingDto,
+  ) {
+    return this.listingService.update(id, updateListingDto);
   }
 
   @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.listingService.remove(+id);
+  @CheckAbilities(ListingAbility.Delete)
+  remove(@Param('id', ParseUUIDPipe) id: string) {
+    return this.listingService.remove(id);
   }
 }

@@ -1,4 +1,10 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import {
+  forwardRef,
+  Inject,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
+
 import { NeighbourhoodService } from '../address/neighbourhood/neighbourhood.service';
 import { ProfileService } from '../profile/profile.service';
 import { TagService } from '../tag/tag.service';
@@ -11,21 +17,35 @@ export class ListingService {
   constructor(
     private listingRepository: ListingRepository,
     private tagService: TagService,
+    @Inject(forwardRef(() => ProfileService))
     private profileService: ProfileService,
     private neighbourhoodService: NeighbourhoodService,
   ) {}
+
   async create(createListingDto: CreateListingDto, userId) {
-    const { tags: tagsArray, ...body } = createListingDto;
+    const { tags: tagsArray, neighbourhood_id, ...body } = createListingDto;
     const user = await this.profileService.findOne(userId);
-    const listing = await this.listingRepository.save({
+    let listingBody: any = {
       ...body,
       user,
-    });
+    };
+    if (neighbourhood_id) {
+      const neighbourhood = await this.neighbourhoodService.findOne(
+        neighbourhood_id,
+      );
+      listingBody = {
+        ...listingBody,
+        neighbourhood,
+      };
+    }
     if (tagsArray?.length) {
       const tags = await this.tagService.findByIds(tagsArray);
-      listing.tags = tags;
-      this.listingRepository.save(listing);
+      listingBody = {
+        ...listingBody,
+        tags,
+      };
     }
+    this.listingRepository.save(listingBody);
   }
 
   findAll(take = 20, skip = 0) {

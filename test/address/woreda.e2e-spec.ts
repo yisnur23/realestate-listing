@@ -4,7 +4,6 @@ import request from 'supertest';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { testingDbConfig } from '../testing-db-config';
 import crypto from 'crypto';
-import { AddressModule } from '../../src/modules/address/address.module';
 import { RouterModule } from '@nestjs/core';
 import { AddressRoutes } from '../../src/modules/address/address.routes';
 import { CityRepository } from '../../src/modules/address/city/city.repository';
@@ -12,6 +11,7 @@ import { SubCityRepository } from '../../src/modules/address/subcity/subcity.rep
 import { CreateWoredaDto } from '../../src/modules/address/woreda/dto/create-woreda.dto';
 import { WoredaRepository } from '../../src/modules/address/woreda/woreda.repository';
 import { StateRepository } from '../../src/modules/address/state/state.repository';
+import { WoredaModule } from '../../src/modules/address/woreda/woreda.module';
 
 describe('WoredaController (e2e)', () => {
   let app: INestApplication;
@@ -31,7 +31,7 @@ describe('WoredaController (e2e)', () => {
     const moduleFixture: TestingModule = await Test.createTestingModule({
       imports: [
         TypeOrmModule.forRoot(testingDbConfig),
-        AddressModule,
+        WoredaModule,
         RouterModule.register(AddressRoutes),
       ],
     }).compile();

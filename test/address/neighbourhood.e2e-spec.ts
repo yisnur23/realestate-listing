@@ -11,8 +11,10 @@ import { WoredaRepository } from '../../src/modules/address/woreda/woreda.reposi
 import { NeighbourhoodRepository } from '../../src/modules/address/neighbourhood/neighbourhood.repository';
 import { CityRepository } from '../../src/modules/address/city/city.repository';
 import { StateRepository } from '../../src/modules/address/state/state.repository';
+import { ListingModule } from '../../src/modules/listing/listing.module';
+import { NeighbourhoodModule } from '../../src/modules/address/neighbourhood/neighbourhood.module';
 
-describe('CityController (e2e)', () => {
+describe('NeighbourhoodController (e2e)', () => {
   let app: INestApplication;
   let woredaRepository: WoredaRepository;
   let neighbourhoodRepository: NeighbourhoodRepository;
@@ -26,7 +28,7 @@ describe('CityController (e2e)', () => {
     const moduleFixture: TestingModule = await Test.createTestingModule({
       imports: [
         TypeOrmModule.forRoot(testingDbConfig),
-        AddressModule,
+        NeighbourhoodModule,
         RouterModule.register(AddressRoutes),
       ],
     }).compile();

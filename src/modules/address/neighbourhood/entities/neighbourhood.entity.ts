@@ -19,6 +19,8 @@ export class Neighbourhood {
     onDelete: 'SET NULL',
   })
   woreda: Woreda;
-  @OneToMany(() => Listing, (listing) => listing.neighbourhood)
+  @OneToMany(() => Listing, (listing) => listing.neighbourhood, {
+    onDelete: 'SET NULL',
+  })
   listings: Listing[];
 }

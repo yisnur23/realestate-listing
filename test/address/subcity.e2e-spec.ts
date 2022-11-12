@@ -4,13 +4,13 @@ import request from 'supertest';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { testingDbConfig } from '../testing-db-config';
 import crypto from 'crypto';
-import { AddressModule } from '../../src/modules/address/address.module';
 import { RouterModule } from '@nestjs/core';
 import { AddressRoutes } from '../../src/modules/address/address.routes';
 import { CityRepository } from '../../src/modules/address/city/city.repository';
 import { SubCityRepository } from '../../src/modules/address/subcity/subcity.repository';
 import { CreateSubcityDto } from '../../src/modules/address/subcity/dto/create-subcity.dto';
 import { StateRepository } from '../../src/modules/address/state/state.repository';
+import { SubcityModule } from '../../src/modules/address/subcity/subcity.module';
 
 describe('SubcityController (e2e)', () => {
   let app: INestApplication;
@@ -28,7 +28,7 @@ describe('SubcityController (e2e)', () => {
     const moduleFixture: TestingModule = await Test.createTestingModule({
       imports: [
         TypeOrmModule.forRoot(testingDbConfig),
-        AddressModule,
+        SubcityModule,
         RouterModule.register(AddressRoutes),
       ],
     }).compile();

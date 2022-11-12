@@ -5,11 +5,11 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { testingDbConfig } from '../testing-db-config';
 import crypto from 'crypto';
 import { StateRepository } from '../../src/modules/address/state/state.repository';
-import { AddressModule } from '../../src/modules/address/address.module';
 import { RouterModule } from '@nestjs/core';
 import { AddressRoutes } from '../../src/modules/address/address.routes';
 import { CreateCityDto } from '../../src/modules/address/city/dto/create-city.dto';
 import { CityRepository } from '../../src/modules/address/city/city.repository';
+import { CityModule } from '../../src/modules/address/city/city.module';
 
 describe('CityController (e2e)', () => {
   let app: INestApplication;
@@ -26,7 +26,7 @@ describe('CityController (e2e)', () => {
     const moduleFixture: TestingModule = await Test.createTestingModule({
       imports: [
         TypeOrmModule.forRoot(testingDbConfig),
-        AddressModule,
+        CityModule,
         RouterModule.register(AddressRoutes),
       ],
     }).compile();

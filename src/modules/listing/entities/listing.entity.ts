@@ -1,6 +1,7 @@
 import {
   Column,
   Entity,
+  JoinTable,
   ManyToMany,
   ManyToOne,
   OneToMany,
@@ -50,12 +51,23 @@ export class Listing {
     nullable: true,
   })
   location: Point;
-  @ManyToOne(() => User, (user) => user.listings)
+
+  @ManyToOne(() => User, (user) => user.listings, { onDelete: 'SET NULL' })
   user: User;
-  @ManyToOne(() => Neighbourhood, (neighbourhood) => neighbourhood.listings)
+
+  @ManyToOne(() => Neighbourhood, (neighbourhood) => neighbourhood.listings, {
+    onDelete: 'SET NULL',
+  })
   neighbourhood: Neighbourhood;
-  @OneToMany(() => MediaItem, (mediaItem) => mediaItem.listing)
+
+  @OneToMany(() => MediaItem, (mediaItem) => mediaItem.listing, {
+    onDelete: 'SET NULL',
+  })
   mediaItems: MediaItem[];
-  @ManyToMany(() => Tag, (tag) => tag.listings)
+
+  @ManyToMany(() => Tag, (tag) => tag.listings, {
+    onDelete: 'CASCADE',
+  })
+  @JoinTable()
   tags: Tag[];
 }

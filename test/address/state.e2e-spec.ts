@@ -6,9 +6,9 @@ import { testingDbConfig } from '../testing-db-config';
 import crypto from 'crypto';
 import { StateRepository } from '../../src/modules/address/state/state.repository';
 import { StateDto } from '../../src/modules/address/state/dto/create-state.dto';
-import { AddressModule } from '../../src/modules/address/address.module';
 import { RouterModule } from '@nestjs/core';
 import { AddressRoutes } from '../../src/modules/address/address.routes';
+import { StateModule } from '../../src/modules/address/state/state.module';
 
 describe('StateController (e2e)', () => {
   let app: INestApplication;
@@ -23,7 +23,7 @@ describe('StateController (e2e)', () => {
     const moduleFixture: TestingModule = await Test.createTestingModule({
       imports: [
         TypeOrmModule.forRoot(testingDbConfig),
-        AddressModule,
+        StateModule,
         RouterModule.register(AddressRoutes),
       ],
     }).compile();

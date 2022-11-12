@@ -4,6 +4,7 @@ import {
   Column,
   OneToMany,
   ManyToMany,
+  JoinTable,
 } from 'typeorm';
 import { Listing } from '../../listing/entities/listing.entity';
 
@@ -55,8 +56,9 @@ export class User {
     nullable: true,
   })
   profile_picture: string;
-  @OneToMany(() => Listing, (listing) => listing.user)
+  @OneToMany(() => Listing, (listing) => listing.user, { onDelete: 'SET NULL' })
   listings: Listing[];
   @ManyToMany(() => Listing)
+  @JoinTable()
   favorites: Listing[];
 }

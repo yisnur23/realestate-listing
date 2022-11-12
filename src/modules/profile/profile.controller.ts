@@ -3,6 +3,7 @@ import {
   Controller,
   Delete,
   Get,
+  Post,
   Param,
   ParseUUIDPipe,
   Patch,
@@ -38,6 +39,23 @@ export class ProfileController {
   deleteProfile(@Req() req) {
     const user = req.user;
     return this.profileService.deleteProfile(user);
+  }
+
+  @Post('me/favorites')
+  @CheckAbilities(UserAbility.Update)
+  addFavoriteListing(@Req() req, @Body('listingId') listingId: string) {
+    const user = req.user;
+    return this.profileService.addFavoriteListing(listingId, user.id);
+  }
+
+  @Delete('me/favorites/:listingId')
+  @CheckAbilities(UserAbility.Update)
+  removeFavoriteListing(
+    @Req() req,
+    @Param('listingId', ParseUUIDPipe) listingId: string,
+  ) {
+    const user = req.user;
+    return this.profileService.removeFavoriteListing(listingId, user.id);
   }
 
   @Get(':id')
