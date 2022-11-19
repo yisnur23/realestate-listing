@@ -167,6 +167,12 @@ export class ListingRepository extends BaseRepository<Listing> {
         `ST_DWithin(listings.location, ST_MakePoint(${filter.longitude},${filter.latitude})::geography, ${radius})`,
       );
     }
+
+    if (filter.s) {
+      query.andWhere('listings.document @@ plainto_tsquery(:query)', {
+        query: filter.s,
+      });
+    }
     return query.getMany();
   }
 }

@@ -81,7 +81,10 @@ export class Listing {
     nullable: true,
   })
   location: Point;
-
+  @Column({
+    nullable: true,
+  })
+  neighbourhood: string;
   @CreateDateColumn()
   createdDate: Date;
 
@@ -105,4 +108,7 @@ export class Listing {
     name: 'listing_tags',
   })
   tags: Tag[];
+
+  @Column('tsvector', { select: false, nullable: true })
+  document: any;
 }
