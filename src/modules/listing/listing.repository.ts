@@ -140,11 +140,17 @@ export class ListingRepository extends BaseRepository<Listing> {
             .subQuery()
             .select('city.id')
             .from(City, 'city')
-            .where('city.stateId = :stateId')
+            .where('city.state.id = :stateId')
             .getQuery();
-          return 'listings.cityId IN ' + subQuery;
+          return 'listings.city.id IN ' + subQuery;
         })
         .setParameter('stateId', filter.state_id);
+    }
+
+    if (filter.tags) {
+      const tags = !Array.isArray(filter.tags) ? [filter.tags] : filter.tags;
+
+      query.andWhere('tags.id IN (:...tags)', { tags });
     }
 
     if (filter.orderBy) {
