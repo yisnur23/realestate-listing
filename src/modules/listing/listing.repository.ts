@@ -160,6 +160,13 @@ export class ListingRepository extends BaseRepository<Listing> {
         query.orderBy('listings.createdDate', 'DESC');
       }
     }
+
+    if (filter.radius && filter.longitude && filter.latitude) {
+      const radius = filter.radius * 1000;
+      query.andWhere(
+        `ST_DWithin(listings.location, ST_MakePoint(${filter.longitude},${filter.latitude})::geography, ${radius})`,
+      );
+    }
     return query.getMany();
   }
 }
