@@ -5,9 +5,8 @@ import {
   PrimaryGeneratedColumn,
   Column,
 } from 'typeorm';
+import { Listing } from '../../../listing/entities/listing.entity';
 import { State } from '../../state/entities/state.entity';
-import { Subcity } from '../../subcity/entities/subcity.entity';
-import { Woreda } from '../../woreda/entities/woreda.entity';
 
 @Entity()
 export class City {
@@ -15,10 +14,9 @@ export class City {
   id: string;
   @Column()
   name: string;
-  @OneToMany(() => Subcity, (subcity) => subcity.city)
-  subCities: Subcity[];
-  @OneToMany(() => Woreda, (woreda) => woreda.city)
-  woredas: Woreda[];
+
+  @OneToMany(() => Listing, (listing) => listing.city)
+  listings: Listing[];
   @ManyToOne(() => State, (state) => state.cities, {
     nullable: false,
     onDelete: 'SET NULL',

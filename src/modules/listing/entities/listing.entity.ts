@@ -1,5 +1,6 @@
 import {
   Column,
+  CreateDateColumn,
   Entity,
   JoinTable,
   ManyToMany,
@@ -11,7 +12,15 @@ import { Point } from 'geojson';
 import { User } from '../../profile/entities/user.entity';
 import { MediaItem } from './media-item.entity';
 import { Tag } from '../../tag/entities/tag.entity';
-import { Neighbourhood } from '../../address/neighbourhood/entities/neighbourhood.entity';
+import { City } from '../../address/city/entities/city.entity';
+
+export enum ListingType {
+  Apartment = 'Apartment',
+  Villa = 'Villa',
+  Land = 'Land',
+  Duplex = 'Duplex',
+  Condominium = 'Condominium',
+}
 
 @Entity()
 export class Listing {
@@ -28,22 +37,43 @@ export class Listing {
   description: string;
   @Column({
     type: 'decimal',
+    nullable: true,
   })
   price: number;
-  @Column()
+  @Column({
+    nullable: true,
+  })
   number_of_floors: number;
-  @Column()
+  @Column({
+    nullable: true,
+  })
   floor_size: number;
-  @Column()
+  @Column({
+    nullable: true,
+  })
   lot_size: number;
-  @Column()
+  @Column({
+    nullable: true,
+  })
   year_built: number;
-  @Column()
+  @Column({
+    nullable: true,
+  })
   total_number_of_rooms: number;
-  @Column()
+  @Column({
+    nullable: true,
+  })
   number_of_bath_rooms: number;
-  @Column()
+  @Column({
+    nullable: true,
+  })
   number_of_bed_rooms: number;
+  @Column({
+    type: 'enum',
+    enum: ListingType,
+    nullable: true,
+  })
+  type: ListingType;
   @Column({
     type: 'geography',
     spatialFeatureType: 'Point',
@@ -52,13 +82,16 @@ export class Listing {
   })
   location: Point;
 
+  @CreateDateColumn()
+  createdDate: Date;
+
   @ManyToOne(() => User, (user) => user.listings, { onDelete: 'SET NULL' })
   user: User;
 
-  @ManyToOne(() => Neighbourhood, (neighbourhood) => neighbourhood.listings, {
+  @ManyToOne(() => City, (city) => city.listings, {
     onDelete: 'SET NULL',
   })
-  neighbourhood: Neighbourhood;
+  city: City;
 
   @OneToMany(() => MediaItem, (mediaItem) => mediaItem.listing, {
     onDelete: 'SET NULL',
@@ -68,6 +101,8 @@ export class Listing {
   @ManyToMany(() => Tag, (tag) => tag.listings, {
     onDelete: 'CASCADE',
   })
-  @JoinTable()
+  @JoinTable({
+    name: 'listing_tags',
+  })
   tags: Tag[];
 }

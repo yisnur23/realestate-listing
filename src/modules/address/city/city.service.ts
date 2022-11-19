@@ -21,6 +21,9 @@ export class CityService {
 
   findAll(take = 20, skip = 0) {
     return this.cityRepository.find({
+      relations: {
+        state: true,
+      },
       take,
       skip,
     });

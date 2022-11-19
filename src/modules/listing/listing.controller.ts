@@ -25,13 +25,20 @@ export class ListingController {
   @CheckAbilities(ListingAbility.Create)
   create(@Req() req, @Body() createListingDto: CreateListingDto) {
     const user = req.user;
-    return this.listingService.create(createListingDto, user.id);
+    return this.listingService.create(
+      createListingDto,
+      '2e520ad7-274b-4ff8-a498-198329a023ce',
+    );
   }
 
   @Get()
   @Public()
-  findAll(@Query('take') take: number, @Query('skip') skip: number) {
-    return this.listingService.findAll(take, skip);
+  findAll(
+    @Query('take') take: number,
+    @Query('skip') skip: number,
+    @Query() query,
+  ) {
+    return this.listingService.findAll(take, skip, query);
   }
 
   @Get(':id')

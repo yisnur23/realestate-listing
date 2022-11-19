@@ -6,15 +6,14 @@ import { TagModule } from '../tag/tag.module';
 import { ProfileModule } from '../profile/profile.module';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { Listing } from './entities/listing.entity';
-import { AddressModule } from '../address/address.module';
 import { MediaItem } from './entities/media-item.entity';
-import { NeighbourhoodModule } from '../address/neighbourhood/neighbourhood.module';
+import { CityModule } from '../address/city/city.module';
 
 @Module({
   imports: [
     TypeOrmModule.forFeature([Listing, MediaItem]),
     forwardRef(() => ProfileModule),
-    forwardRef(() => NeighbourhoodModule),
+    forwardRef(() => CityModule),
     forwardRef(() => TagModule),
   ],
   controllers: [ListingController],

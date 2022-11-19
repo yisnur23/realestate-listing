@@ -7,10 +7,7 @@ import {
 } from '@casl/ability';
 import { Injectable } from '@nestjs/common';
 import { City } from '../address/city/entities/city.entity';
-import { Neighbourhood } from '../address/neighbourhood/entities/neighbourhood.entity';
 import { State } from '../address/state/entities/state.entity';
-import { Subcity } from '../address/subcity/entities/subcity.entity';
-import { Woreda } from '../address/woreda/entities/woreda.entity';
 import { Listing } from '../listing/entities/listing.entity';
 import { User, UserRole } from '../profile/entities/user.entity';
 import { Tag } from '../tag/entities/tag.entity';
@@ -29,9 +26,6 @@ export type Subjects =
   | InferSubjects<typeof Listing>
   | InferSubjects<typeof State>
   | InferSubjects<typeof City>
-  | InferSubjects<typeof Subcity>
-  | InferSubjects<typeof Woreda>
-  | InferSubjects<typeof Neighbourhood>
   | 'all';
 
 export type AppAbility = PureAbility<[Action, Subjects]>;

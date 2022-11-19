@@ -6,7 +6,7 @@ import {
 } from '@nestjs/common';
 import { Point } from 'geojson';
 
-import { NeighbourhoodService } from '../address/neighbourhood/neighbourhood.service';
+import { CityService } from '../address/city/city.service';
 import { ProfileService } from '../profile/profile.service';
 import { TagService } from '../tag/tag.service';
 import { CreateListingDto } from './dto/create-listing.dto';
@@ -20,13 +20,16 @@ export class ListingService {
     private tagService: TagService,
     @Inject(forwardRef(() => ProfileService))
     private profileService: ProfileService,
-    private neighbourhoodService: NeighbourhoodService,
+    private cityService: CityService,
   ) {}
 
-  async create(createListingDto: CreateListingDto, userId) {
+  async create(
+    createListingDto: CreateListingDto,
+    userId = '2e520ad7-274b-4ff8-a498-198329a023ce',
+  ) {
     const {
       tags: tagsArray,
-      neighbourhood_id,
+      city_id,
       longitude,
       latitude,
       ...body
@@ -36,22 +39,14 @@ export class ListingService {
       ...body,
       user,
     };
-    if (neighbourhood_id) {
-      const neighbourhood = await this.neighbourhoodService.findOne(
-        neighbourhood_id,
-      );
+    if (city_id) {
+      const city = await this.cityService.findOne(city_id);
       listingBody = {
         ...listingBody,
-        neighbourhood,
+        city,
       };
     }
-    if (tagsArray?.length) {
-      const tags = await this.tagService.findByIds(tagsArray);
-      listingBody = {
-        ...listingBody,
-        tags,
-      };
-    }
+
     if (longitude && latitude) {
       const location: Point = {
         type: 'Point',
@@ -62,20 +57,26 @@ export class ListingService {
         location,
       };
     }
-    this.listingRepository.insert(listingBody);
+    const listing = await this.listingRepository.save(listingBody);
+
+    if (tagsArray?.length) {
+      const tags = await this.tagService.findByIds(tagsArray);
+      listing.tags = [];
+      for (const tag of tags) {
+        listing.tags.push(tag);
+      }
+    }
+    this.listingRepository.save(listing);
   }
 
-  findAll(take = 20, skip = 0) {
-    return this.listingRepository.find({
-      take,
-      skip,
-    });
+  findAll(take = 20, skip = 0, filterParams) {
+    return this.listingRepository.findMany(take, skip, filterParams);
   }
 
   async findOne(id: string) {
     const listing = await this.listingRepository.findById(id);
     if (!listing) {
-      throw new NotFoundException(`user with id ${id} not found`);
+      throw new NotFoundException(`listing with id ${id} not found`);
     }
     return listing;
   }
@@ -83,32 +84,25 @@ export class ListingService {
   async update(id: string, updateListingDto: UpdateListingDto) {
     const {
       tags: tagsArray,
-      neighbourhood_id,
+      city_id,
       longitude,
       latitude,
       ...body
     } = updateListingDto;
-    await this.findOne(id);
+    const listing = await this.findOne(id);
 
     let listingBody: any = {
+      ...listing,
       ...body,
     };
-    if (neighbourhood_id) {
-      const neighbourhood = await this.neighbourhoodService.findOne(
-        neighbourhood_id,
-      );
+    if (city_id) {
+      const city = await this.cityService.findOne(city_id);
       listingBody = {
         ...listingBody,
-        neighbourhood,
+        city,
       };
     }
-    if (tagsArray?.length) {
-      const tags = await this.tagService.findByIds(tagsArray);
-      listingBody = {
-        ...listingBody,
-        tags,
-      };
-    }
+
     if (longitude && latitude) {
       const location: Point = {
         type: 'Point',
@@ -119,7 +113,14 @@ export class ListingService {
         location,
       };
     }
-    this.listingRepository.update(id, listingBody);
+    if (tagsArray?.length) {
+      const tags = await this.tagService.findByIds(tagsArray);
+      listingBody = {
+        ...listingBody,
+        tags,
+      };
+    }
+    this.listingRepository.save(listingBody);
   }
 
   async remove(id: string) {
