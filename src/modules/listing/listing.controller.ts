@@ -16,6 +16,7 @@ import { UpdateListingDto } from './dto/update-listing.dto';
 import { CheckAbilities } from '../ability/ability.decorator';
 import { ListingAbility } from './listing.abilities';
 import { Public } from '../auth/auth.decorator';
+import { ListingQueryDto } from './dto/listing-query.dto';
 
 @Controller('listings')
 export class ListingController {
@@ -36,7 +37,7 @@ export class ListingController {
   findAll(
     @Query('take') take: number,
     @Query('skip') skip: number,
-    @Query() query,
+    @Query() query: ListingQueryDto,
   ) {
     return this.listingService.findAll(take, skip, query);
   }

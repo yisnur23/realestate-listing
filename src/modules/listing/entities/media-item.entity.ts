@@ -17,9 +17,12 @@ export class MediaItem {
   @Column({
     type: 'enum',
     enum: MediaItemType,
+    default: MediaItemType.IMAGE,
   })
   type: MediaItemType;
-  @Column()
+  @Column({
+    nullable: true,
+  })
   position: number;
   @ManyToOne(() => Listing, (listing) => listing.mediaItems)
   listing: Listing;

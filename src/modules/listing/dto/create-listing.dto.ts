@@ -43,6 +43,7 @@ export class CreateListingDto {
   @IsOptional()
   @IsLatitude()
   latitude: number;
+  @IsOptional()
   @IsLongitude()
   longitude: number;
 }
