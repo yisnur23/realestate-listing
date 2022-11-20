@@ -32,7 +32,6 @@ export class User {
   })
   role: UserRole;
   @Column({
-    nullable: false,
     unique: true,
   })
   email: string;
