@@ -26,10 +26,7 @@ export class ListingController {
   @CheckAbilities(ListingAbility.Create)
   create(@Req() req, @Body() createListingDto: CreateListingDto) {
     const user = req.user;
-    return this.listingService.create(
-      createListingDto,
-      '2e520ad7-274b-4ff8-a498-198329a023ce',
-    );
+    return this.listingService.create(createListingDto, user.id);
   }
 
   @Get()
@@ -49,17 +46,21 @@ export class ListingController {
   }
 
   @Patch(':id')
+  @Public()
   @CheckAbilities(ListingAbility.Update)
   update(
     @Param('id', ParseUUIDPipe) id: string,
     @Body() updateListingDto: UpdateListingDto,
+    @Req() req,
   ) {
-    return this.listingService.update(id, updateListingDto);
+    const user = req.user;
+    return this.listingService.update(id, updateListingDto, user);
   }
 
   @Delete(':id')
   @CheckAbilities(ListingAbility.Delete)
-  remove(@Param('id', ParseUUIDPipe) id: string) {
-    return this.listingService.remove(id);
+  remove(@Param('id', ParseUUIDPipe) id: string, @Req() req) {
+    const user = req.user;
+    return this.listingService.remove(id, user);
   }
 }

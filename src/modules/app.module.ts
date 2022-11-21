@@ -48,14 +48,14 @@ import { ListingModule } from './listing/listing.module';
   controllers: [AppController],
   providers: [
     AppService,
-    // {
-    //   provide: APP_GUARD,
-    //   useClass: AuthenticationGuard,
-    // },
-    // {
-    //   provide: APP_GUARD,
-    //   useClass: AbilitiesGuard,
-    // },
+    {
+      provide: APP_GUARD,
+      useClass: AuthenticationGuard,
+    },
+    {
+      provide: APP_GUARD,
+      useClass: AbilitiesGuard,
+    },
   ],
 })
 export class AppModule {}

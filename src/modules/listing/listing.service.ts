@@ -1,16 +1,19 @@
 import {
+  ForbiddenException,
   forwardRef,
   Inject,
   Injectable,
   NotFoundException,
 } from '@nestjs/common';
 import { Point } from 'geojson';
+import { AbilityFactory, Action } from '../ability/ability.factory';
 
 import { CityService } from '../address/city/city.service';
 import { ProfileService } from '../profile/profile.service';
 import { TagService } from '../tag/tag.service';
 import { CreateListingDto } from './dto/create-listing.dto';
 import { UpdateListingDto } from './dto/update-listing.dto';
+
 import { ListingRepository } from './listing.repository';
 
 @Injectable()
@@ -21,12 +24,10 @@ export class ListingService {
     @Inject(forwardRef(() => ProfileService))
     private profileService: ProfileService,
     private cityService: CityService,
+    private abilityFactory: AbilityFactory,
   ) {}
 
-  async create(
-    createListingDto: CreateListingDto,
-    userId = '2e520ad7-274b-4ff8-a498-198329a023ce',
-  ) {
+  async create(createListingDto: CreateListingDto, userId) {
     const {
       tags: tagsArray,
       city_id,
@@ -74,14 +75,27 @@ export class ListingService {
   }
 
   async findOne(id: string) {
-    const listing = await this.listingRepository.findById(id);
+    const listing = await this.listingRepository.findOne({
+      where: { id },
+      select: {
+        user: {
+          id: true,
+          display_name: true,
+          profile_picture: true,
+        },
+      },
+      relations: {
+        user: true,
+      },
+    });
     if (!listing) {
       throw new NotFoundException(`listing with id ${id} not found`);
     }
     return listing;
   }
 
-  async update(id: string, updateListingDto: UpdateListingDto) {
+  async update(id: string, updateListingDto: UpdateListingDto, user) {
+    const ability = this.abilityFactory.defineAbilityFor(user);
     const {
       tags: tagsArray,
       city_id,
@@ -90,6 +104,10 @@ export class ListingService {
       ...body
     } = updateListingDto;
     const listing = await this.findOne(id);
+    console.log(listing);
+    if (!ability.can(Action.Update, listing)) {
+      throw new ForbiddenException('can not update listing');
+    }
 
     let listingBody: any = {
       ...listing,
@@ -123,8 +141,12 @@ export class ListingService {
     this.listingRepository.save(listingBody);
   }
 
-  async remove(id: string) {
-    await this.findOne(id);
+  async remove(id: string, user) {
+    const ability = this.abilityFactory.defineAbilityFor(user);
+    const listing = await this.findOne(id);
+    if (!ability.can(Action.Delete, listing)) {
+      throw new ForbiddenException('can not delete listing');
+    }
     this.listingRepository.delete(id);
   }
 }

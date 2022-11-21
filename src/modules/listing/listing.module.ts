@@ -8,6 +8,7 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { Listing } from './entities/listing.entity';
 import { MediaItem } from './entities/media-item.entity';
 import { CityModule } from '../address/city/city.module';
+import { AbilityModule } from '../ability/ability.module';
 
 @Module({
   imports: [
@@ -15,6 +16,7 @@ import { CityModule } from '../address/city/city.module';
     forwardRef(() => ProfileModule),
     forwardRef(() => CityModule),
     forwardRef(() => TagModule),
+    AbilityModule,
   ],
   controllers: [ListingController],
   providers: [ListingService, ListingRepository],

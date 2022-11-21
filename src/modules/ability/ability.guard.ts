@@ -20,12 +20,12 @@ export class AbilitiesGuard implements CanActivate {
       CHECK_ABILITY,
       context.getHandler(),
     );
+
     if (isPublic && !rules) return true;
 
     const { user } = context.switchToHttp().getRequest();
 
     const ability = this.abilityFactory.defineAbilityFor(user);
-
     return !!rules?.some((rule) => ability.can(rule.action, rule.subject));
   }
 }

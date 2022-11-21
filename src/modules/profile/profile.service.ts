@@ -4,7 +4,6 @@ import {
   Inject,
   Injectable,
   NotFoundException,
-  OnModuleInit,
 } from '@nestjs/common';
 import { permittedFieldsOf } from '@casl/ability/extra';
 import { AbilityFactory, Action } from '../ability/ability.factory';
@@ -13,7 +12,6 @@ import { User } from './entities/user.entity';
 import { ProfileRepository } from './profile.repository';
 import { pick } from '../../common/utils';
 import { ListingService } from '../listing/listing.service';
-import { ModuleRef } from '@nestjs/core';
 
 @Injectable()
 export class ProfileService {
