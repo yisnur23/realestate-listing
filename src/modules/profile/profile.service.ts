@@ -92,8 +92,18 @@ export class ProfileService {
     return this.profileRepository.findUserByEmail(email);
   }
 
+  getFavoriteListings(userId: string) {
+    return this.profileRepository.getFavorites(userId);
+  }
+
   async addFavoriteListing(listingId: string, userId: string) {
-    const profile = await this.findOne(userId);
+    const profile = await this.profileRepository.findOne({
+      where: { id: userId },
+      relations: { favorites: true },
+    });
+    if (!profile) {
+      throw new NotFoundException(`user with id ${userId} not found`);
+    }
     const listing = await this.listingService.findOne(listingId);
     if (!profile.favorites) {
       profile.favorites = [];
@@ -102,11 +112,19 @@ export class ProfileService {
     this.profileRepository.save(profile);
   }
   async removeFavoriteListing(listingId: string, userId: string) {
-    const profile = await this.findOne(userId);
+    const profile = await this.profileRepository.findOne({
+      where: { id: userId },
+      relations: { favorites: true },
+    });
+    if (!profile) {
+      throw new NotFoundException(`user with id ${userId} not found`);
+    }
     if (!profile.favorites) {
       profile.favorites = [];
     }
-    profile.favorites.filter((listing) => listing.id !== listingId);
+    profile.favorites = profile.favorites.filter(
+      (listing) => listing.id !== listingId,
+    );
     this.profileRepository.save(profile);
   }
 }

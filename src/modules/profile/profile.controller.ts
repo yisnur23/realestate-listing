@@ -41,6 +41,13 @@ export class ProfileController {
     return this.profileService.deleteProfile(user);
   }
 
+  @Get('me/favorites')
+  @CheckAbilities(UserAbility.Read)
+  getFavoriteListings(@Req() req) {
+    const user = req.user;
+    return this.profileService.getFavoriteListings(user);
+  }
+
   @Post('me/favorites')
   @CheckAbilities(UserAbility.Update)
   addFavoriteListing(@Req() req, @Body('listingId') listingId: string) {

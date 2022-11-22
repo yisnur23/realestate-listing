@@ -13,4 +13,11 @@ export class ProfileRepository extends BaseRepository<User> {
       email,
     });
   }
+
+  getFavorites(id: string) {
+    return this.createQueryBuilder('user')
+      .relation('favorites')
+      .of(id)
+      .loadMany();
+  }
 }
