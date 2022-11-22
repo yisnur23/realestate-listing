@@ -59,8 +59,8 @@ export class ProfileController {
   }
 
   @Get(':id')
-  @CheckAbilities(UserAbility.Read)
   @Public()
+  @CheckAbilities(UserAbility.Read)
   getUser(@Req() req, @Param('id', ParseUUIDPipe) id) {
     const user = req.user;
     return this.profileService.getUser(id, user);

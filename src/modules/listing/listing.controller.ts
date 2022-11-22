@@ -46,7 +46,6 @@ export class ListingController {
   }
 
   @Patch(':id')
-  @Public()
   @CheckAbilities(ListingAbility.Update)
   update(
     @Param('id', ParseUUIDPipe) id: string,
