@@ -23,7 +23,12 @@ export type GoogleConfig = {
 
   rootUrl: string;
 };
-
+export type AWSConfig = {
+  region: string;
+  bucketName: string;
+  accessId: string;
+  accessKey: string;
+};
 export const google = registerAs(
   'google',
   (): GoogleConfig => ({
@@ -46,7 +51,15 @@ export const app = registerAs(
     nodeEnv: process.env.NODE_ENV,
   }),
 );
-
+export const aws = registerAs(
+  'aws',
+  (): AWSConfig => ({
+    region: process.env.S3_REGION,
+    bucketName: process.env.S3_BUCKET_NAME,
+    accessId: process.env.S3_ACCESS_KEY_ID,
+    accessKey: process.env.S3_SECRET_ACCESS_KEY,
+  }),
+);
 export const session = registerAs(
   'session',
   (): SessionOptions => ({

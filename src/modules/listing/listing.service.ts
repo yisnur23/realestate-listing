@@ -5,6 +5,7 @@ import {
   Injectable,
   NotFoundException,
 } from '@nestjs/common';
+import { S3 } from 'aws-sdk';
 import { Point } from 'geojson';
 import { AbilityFactory, Action } from '../ability/ability.factory';
 
@@ -15,6 +16,7 @@ import { CreateListingDto } from './dto/create-listing.dto';
 import { UpdateListingDto } from './dto/update-listing.dto';
 
 import { ListingRepository } from './listing.repository';
+import { MediaItemRepository } from './mediaItem.repository';
 
 @Injectable()
 export class ListingService {
@@ -25,7 +27,15 @@ export class ListingService {
     private profileService: ProfileService,
     private cityService: CityService,
     private abilityFactory: AbilityFactory,
+    private mediaItemRepository: MediaItemRepository,
+    private configService: ConfigService,
   ) {}
+
+  private s3 = new S3({
+      region: conf
+      accessKeyId: this.accessKeyId,
+      secretAccessKey: this.secretAccessKey,
+  });
 
   async create(createListingDto: CreateListingDto, userId) {
     const {
@@ -33,6 +43,7 @@ export class ListingService {
       city_id,
       longitude,
       latitude,
+      mediaItems: mediaItemsArray,
       ...body
     } = createListingDto;
     const user = await this.profileService.findOne(userId);
@@ -58,6 +69,14 @@ export class ListingService {
         location,
       };
     }
+    if (mediaItemsArray) {
+      const mediaItems = this.mediaItemRepository.create(mediaItemsArray);
+      await this.mediaItemRepository.insert(mediaItems);
+      listingBody = {
+        ...listingBody,
+        mediaItems,
+      };
+    }
     const listing = await this.listingRepository.save(listingBody);
 
     if (tagsArray?.length) {
@@ -67,6 +86,7 @@ export class ListingService {
         listing.tags.push(tag);
       }
     }
+
     this.listingRepository.save(listing);
   }
 

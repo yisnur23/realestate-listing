@@ -14,4 +14,8 @@ export const configSchema = Joi.object({
   GOOGLE_ROOT_URL: Joi.string().required(),
   SERVER_URL: Joi.string().required(),
   SESSION_SECRET: Joi.string().required(),
+  AWS_REGION: Joi.string().required(),
+  S3_BUCKET_NAME: Joi.string().required(),
+  AWS_ACCESS_KEY_ID: Joi.string().required(),
+  AWS_SECRET_ACCESS_KEY: Joi.string().required(),
 });

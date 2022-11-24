@@ -9,6 +9,7 @@ import { Listing } from './entities/listing.entity';
 import { MediaItem } from './entities/media-item.entity';
 import { CityModule } from '../address/city/city.module';
 import { AbilityModule } from '../ability/ability.module';
+import { MediaItemRepository } from './mediaItem.repository';
 
 @Module({
   imports: [
@@ -19,7 +20,7 @@ import { AbilityModule } from '../ability/ability.module';
     AbilityModule,
   ],
   controllers: [ListingController],
-  providers: [ListingService, ListingRepository],
+  providers: [ListingService, ListingRepository, MediaItemRepository],
   exports: [ListingService],
 })
 export class ListingModule {}

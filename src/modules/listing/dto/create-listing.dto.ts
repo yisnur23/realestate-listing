@@ -5,8 +5,24 @@ import {
   IsLatitude,
   IsLongitude,
   IsEnum,
+  IsUrl,
+  IsNumber,
+  ValidateNested,
 } from 'class-validator';
+import { Type } from 'class-transformer';
 import { ListingType } from '../entities/listing.entity';
+import { MediaItemType } from '../entities/media-item.entity';
+
+export class MediaItemDto {
+  @IsUrl()
+  url: string;
+  @IsEnum(MediaItemType)
+  type: MediaItemType;
+  @IsOptional()
+  @IsNumber()
+  @Type(() => Number)
+  position: number;
+}
 
 export class CreateListingDto {
   @Length(2, 80)
@@ -46,4 +62,7 @@ export class CreateListingDto {
   @IsOptional()
   @IsLongitude()
   longitude: number;
+  @ValidateNested({ each: true })
+  @Type(() => MediaItemDto)
+  mediaItems: MediaItemDto[];
 }

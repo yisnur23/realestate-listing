@@ -97,6 +97,7 @@ export class Listing {
   city: City;
 
   @OneToMany(() => MediaItem, (mediaItem) => mediaItem.listing, {
+    cascade: true,
     onDelete: 'SET NULL',
   })
   mediaItems: MediaItem[];

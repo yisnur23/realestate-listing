@@ -13,6 +13,7 @@ export class ListingRepository extends BaseRepository<Listing> {
     const query = this.createQueryBuilder('listings');
     query.leftJoinAndSelect('listings.city', 'city');
     query.leftJoinAndSelect('listings.tags', 'tags');
+    query.leftJoinAndSelect('listings.mediaItems', 'mediaItems');
     query
       .leftJoinAndSelect('listings.user', 'user')
       .select([
@@ -27,6 +28,7 @@ export class ListingRepository extends BaseRepository<Listing> {
         'listings.type',
         'city',
         'tags',
+        'mediaItems',
         'user.id',
         'user.display_name',
       ]);

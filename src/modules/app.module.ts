@@ -3,7 +3,16 @@ import { RouterModule } from '@nestjs/core';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { ConfigModule, ConfigService } from '@nestjs/config';
-import { configSchema, database, google, session } from '../config';
+import { AwsSdkModule } from 'nest-aws-sdk';
+import { S3 } from 'aws-sdk';
+import {
+  aws,
+  AWSConfig,
+  configSchema,
+  database,
+  google,
+  session,
+} from '../config';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { AuthModule } from './auth/auth.module';
 import { ProfileModule } from './profile/profile.module';
@@ -21,7 +30,7 @@ import { ListingModule } from './listing/listing.module';
   imports: [
     ConfigModule.forRoot({
       isGlobal: true,
-      load: [database, google, session],
+      load: [database, google, session, aws],
       validationSchema: configSchema,
       validationOptions: {
         allowUnknown: true,
@@ -36,6 +45,13 @@ import { ListingModule } from './listing/listing.module';
         autoLoadEntities: true,
       }),
       inject: [ConfigService],
+    }),
+    AwsSdkModule.forRootAsync({
+      defaultServiceOptions: {
+        region: 'us-east-1',
+
+      },
+      services: [S3],
     }),
     AuthModule,
     ProfileModule,
