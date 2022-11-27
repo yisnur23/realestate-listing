@@ -15,17 +15,19 @@ import {
 } from '../config';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { AuthModule } from './auth/auth.module';
+import { ThrottlerGuard, ThrottlerModule } from '@nestjs/throttler';
 import { ProfileModule } from './profile/profile.module';
 import { DataSourceOptions } from 'typeorm';
 import { TagModule } from './tag/tag.module';
 import { AbilityModule } from './ability/ability.module';
-import { APP_GUARD } from '@nestjs/core';
+import { APP_GUARD, APP_INTERCEPTOR } from '@nestjs/core';
 import { AbilitiesGuard } from './ability/ability.guard';
 import { AuthenticationGuard } from './auth/auth.guard';
 import { AddressModule } from './address/address.module';
 import { AddressRoutes } from './address/address.routes';
 import { ListingModule } from './listing/listing.module';
 import { MediaItemModule } from './media-item/media-item.module';
+import { SentryInterceptor } from '../common/interceptors/sentry.interceptor';
 
 @Module({
   imports: [
@@ -38,6 +40,10 @@ import { MediaItemModule } from './media-item/media-item.module';
         abortEarly: true,
       },
       cache: true,
+    }),
+    ThrottlerModule.forRoot({
+      ttl: 60,
+      limit: 10,
     }),
     TypeOrmModule.forRootAsync({
       imports: [ConfigModule],
@@ -92,6 +98,14 @@ import { MediaItemModule } from './media-item/media-item.module';
     //   provide: APP_GUARD,
     //   useClass: AbilitiesGuard,
     // },
+    {
+      provide: APP_INTERCEPTOR,
+      useClass: SentryInterceptor,
+    },
+    {
+      provide: APP_GUARD,
+      useClass: ThrottlerGuard,
+    },
   ],
 })
 export class AppModule {}

@@ -72,3 +72,7 @@ export const session = registerAs(
     },
   }),
 );
+
+export const sentry = registerAs('sentry', () => ({
+  dsn: process.env.SENTRY_DSN,
+}));

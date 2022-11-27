@@ -7,12 +7,16 @@ import passport from 'passport';
 import { AppModule } from './modules/app.module';
 import { NestExpressApplication } from '@nestjs/platform-express';
 import { config } from 'aws-sdk';
+import Sentry from '@sentry/node';
+import helmet from 'helmet';
 
 async function bootstrap() {
   const app = await NestFactory.create<NestExpressApplication>(AppModule);
   const configService = app.get(ConfigService);
   const sessionConfig = configService.get<SessionOptions>('session');
+  const sentryDsn = configService.get('sentry.dsn');
 
+  app.use(helmet());
   app.use(session(sessionConfig));
   app.use(passport.initialize());
   app.use(passport.session());
@@ -23,6 +27,9 @@ async function bootstrap() {
       forbidUnknownValues: true,
     }),
   );
+  Sentry.init({
+    dsn: sentryDsn,
+  });
   const swaggerConfig = new DocumentBuilder()
     .setTitle('Realestate app')
     .setDescription('rest api documentation for realestate app')
