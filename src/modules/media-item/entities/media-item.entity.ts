@@ -1,5 +1,5 @@
 import { Column, Entity, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
-import { Listing } from './listing.entity';
+import { Listing } from '../../listing/entities/listing.entity';
 
 export enum MediaItemType {
   VIDEO = 'video',

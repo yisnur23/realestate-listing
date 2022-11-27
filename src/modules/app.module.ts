@@ -25,6 +25,7 @@ import { AuthenticationGuard } from './auth/auth.guard';
 import { AddressModule } from './address/address.module';
 import { AddressRoutes } from './address/address.routes';
 import { ListingModule } from './listing/listing.module';
+import { MediaItemModule } from './media-item/media-item.module';
 
 @Module({
   imports: [
@@ -48,10 +49,28 @@ import { ListingModule } from './listing/listing.module';
     }),
     AwsSdkModule.forRootAsync({
       defaultServiceOptions: {
-        region: 'us-east-1',
+        useFactory: (configService: ConfigService) => {
+          const awsConfig = configService.get<AWSConfig>('aws');
 
+          return {
+            region: awsConfig.region,
+            credentials: {
+              accessKeyId: awsConfig.accessKeyId,
+              secretAccessKey: awsConfig.secretAccessKey,
+            },
+          };
+        },
+        imports: [ConfigModule],
+        inject: [ConfigService],
       },
-      services: [S3],
+      services: [
+        {
+          service: S3,
+          serviceOptions: {
+            signatureVersion: 'v4',
+          },
+        },
+      ],
     }),
     AuthModule,
     ProfileModule,
@@ -60,18 +79,19 @@ import { ListingModule } from './listing/listing.module';
     AddressModule,
     RouterModule.register(AddressRoutes),
     ListingModule,
+    MediaItemModule,
   ],
   controllers: [AppController],
   providers: [
     AppService,
-    {
-      provide: APP_GUARD,
-      useClass: AuthenticationGuard,
-    },
-    {
-      provide: APP_GUARD,
-      useClass: AbilitiesGuard,
-    },
+    // {
+    //   provide: APP_GUARD,
+    //   useClass: AuthenticationGuard,
+    // },
+    // {
+    //   provide: APP_GUARD,
+    //   useClass: AbilitiesGuard,
+    // },
   ],
 })
 export class AppModule {}

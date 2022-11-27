@@ -3,7 +3,7 @@ import { ConfigService } from '@nestjs/config';
 import { config } from 'dotenv';
 import { Listing } from './modules/listing/entities/listing.entity';
 import { User } from './modules/profile/entities/user.entity';
-import { MediaItem } from './modules/listing/entities/media-item.entity';
+import { MediaItem } from './modules/media-item/entities/media-item.entity';
 import { City } from './modules/address/city/entities/city.entity';
 import { State } from './modules/address/state/entities/state.entity';
 import { Tag } from './modules/tag/entities/tag.entity';

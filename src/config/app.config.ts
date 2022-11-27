@@ -9,7 +9,7 @@ export const database = registerAs('database', (): DataSourceOptions => {
     port: +process.env.DB_PORT || 5432,
     username: process.env.DB_USERNAME,
     password: process.env.DB_PASSWORD,
-    database: process.env.DB_DATABASE_NAME,
+    database: process.env.DB_NAME,
     synchronize: process.env.NODE_ENV === 'development',
     logging: false,
     entities: [],
@@ -20,14 +20,13 @@ export type GoogleConfig = {
   clientId: string;
   clientSecret: string;
   redirectUrl: string;
-
   rootUrl: string;
 };
 export type AWSConfig = {
   region: string;
   bucketName: string;
-  accessId: string;
-  accessKey: string;
+  accessKeyId: string;
+  secretAccessKey: string;
 };
 export const google = registerAs(
   'google',
@@ -54,10 +53,10 @@ export const app = registerAs(
 export const aws = registerAs(
   'aws',
   (): AWSConfig => ({
-    region: process.env.S3_REGION,
+    region: process.env.AWS_REGION,
     bucketName: process.env.S3_BUCKET_NAME,
-    accessId: process.env.S3_ACCESS_KEY_ID,
-    accessKey: process.env.S3_SECRET_ACCESS_KEY,
+    accessKeyId: process.env.AWS_ACCESS_KEY_ID,
+    secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY,
   }),
 );
 export const session = registerAs(

@@ -10,13 +10,13 @@ import { Point } from 'geojson';
 import { AbilityFactory, Action } from '../ability/ability.factory';
 
 import { CityService } from '../address/city/city.service';
+import { MediaItemService } from '../media-item/media-item.service';
 import { ProfileService } from '../profile/profile.service';
 import { TagService } from '../tag/tag.service';
 import { CreateListingDto } from './dto/create-listing.dto';
 import { UpdateListingDto } from './dto/update-listing.dto';
 
 import { ListingRepository } from './listing.repository';
-import { MediaItemRepository } from './mediaItem.repository';
 
 @Injectable()
 export class ListingService {
@@ -27,15 +27,8 @@ export class ListingService {
     private profileService: ProfileService,
     private cityService: CityService,
     private abilityFactory: AbilityFactory,
-    private mediaItemRepository: MediaItemRepository,
-    private configService: ConfigService,
+    private mediaItemService: MediaItemService,
   ) {}
-
-  private s3 = new S3({
-      region: conf
-      accessKeyId: this.accessKeyId,
-      secretAccessKey: this.secretAccessKey,
-  });
 
   async create(createListingDto: CreateListingDto, userId) {
     const {
@@ -70,8 +63,7 @@ export class ListingService {
       };
     }
     if (mediaItemsArray) {
-      const mediaItems = this.mediaItemRepository.create(mediaItemsArray);
-      await this.mediaItemRepository.insert(mediaItems);
+      const mediaItems = await this.mediaItemService.create(mediaItemsArray);
       listingBody = {
         ...listingBody,
         mediaItems,

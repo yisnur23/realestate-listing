@@ -10,7 +10,7 @@ import {
 } from 'typeorm';
 import { Point } from 'geojson';
 import { User } from '../../profile/entities/user.entity';
-import { MediaItem } from './media-item.entity';
+import { MediaItem } from '../../media-item/entities/media-item.entity';
 import { Tag } from '../../tag/entities/tag.entity';
 import { City } from '../../address/city/entities/city.entity';
 
