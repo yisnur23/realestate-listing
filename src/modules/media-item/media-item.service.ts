@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import cuid from 'cuid';
 import { CreateMediaItemDto } from './dto/create-media-item.dto';
@@ -31,11 +31,26 @@ export class MediaItemService {
     return { url };
   }
 
+  async findOne(id: string) {
+    const mediaItem = await this.mediaItemRepository.findById(id);
+    if (!mediaItem) {
+      throw new NotFoundException(`media item with id ${id} not found`);
+    }
+    return mediaItem;
+  }
+
   update(id: string, updateMediaItemDto: UpdateMediaItemDto) {
     this.mediaItemRepository.update(id, updateMediaItemDto);
   }
 
-  remove(id: string) {
-    return `This action removes a #${id} mediaItem`;
+  async remove(id: string) {
+    const mediaItem = await this.findOne(id);
+    const Key = mediaItem.url.split('/')[3];
+
+    await this.s3.deleteObject({
+      Bucket: this.bucketName,
+      Key,
+    });
+    // this.mediaItemRepository.delete(id);
   }
 }
