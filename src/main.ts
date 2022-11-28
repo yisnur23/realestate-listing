@@ -7,7 +7,7 @@ import passport from 'passport';
 import { AppModule } from './modules/app.module';
 import { NestExpressApplication } from '@nestjs/platform-express';
 import { config } from 'aws-sdk';
-import Sentry from '@sentry/node';
+import * as Sentry from '@sentry/node';
 import helmet from 'helmet';
 
 async function bootstrap() {
