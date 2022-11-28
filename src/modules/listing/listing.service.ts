@@ -116,7 +116,7 @@ export class ListingService {
       ...body
     } = updateListingDto;
     const listing = await this.findOne(id);
-    console.log(listing);
+
     if (!ability.can(Action.Update, listing)) {
       throw new ForbiddenException('can not update listing');
     }

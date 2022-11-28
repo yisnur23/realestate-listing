@@ -90,14 +90,14 @@ import { SentryInterceptor } from '../common/interceptors/sentry.interceptor';
   controllers: [AppController],
   providers: [
     AppService,
-    // {
-    //   provide: APP_GUARD,
-    //   useClass: AuthenticationGuard,
-    // },
-    // {
-    //   provide: APP_GUARD,
-    //   useClass: AbilitiesGuard,
-    // },
+    {
+      provide: APP_GUARD,
+      useClass: AuthenticationGuard,
+    },
+    {
+      provide: APP_GUARD,
+      useClass: AbilitiesGuard,
+    },
     {
       provide: APP_INTERCEPTOR,
       useClass: SentryInterceptor,
