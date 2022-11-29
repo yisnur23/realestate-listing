@@ -9,7 +9,7 @@ import {
 } from 'class-validator';
 import { Type } from 'class-transformer';
 import { ListingType } from '../entities/listing.entity';
-import { CreateMediaItemDto } from 'src/modules/media-item/dto/create-media-item.dto';
+import { CreateMediaItemDto } from '../../media-item/dto/create-media-item.dto';
 
 export class CreateListingDto {
   @Length(2, 80)
