@@ -12,10 +12,11 @@ import {
   database,
   google,
   session,
+  redis,
+  sentry,
 } from '../config';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { AuthModule } from './auth/auth.module';
-import { ThrottlerGuard, ThrottlerModule } from '@nestjs/throttler';
 import { ProfileModule } from './profile/profile.module';
 import { DataSourceOptions } from 'typeorm';
 import { TagModule } from './tag/tag.module';
@@ -33,7 +34,7 @@ import { SentryInterceptor } from '../common/interceptors/sentry.interceptor';
   imports: [
     ConfigModule.forRoot({
       isGlobal: true,
-      load: [database, google, session, aws],
+      load: [database, google, session, aws, redis, sentry],
       validationSchema: configSchema,
       validationOptions: {
         allowUnknown: true,
@@ -41,10 +42,7 @@ import { SentryInterceptor } from '../common/interceptors/sentry.interceptor';
       },
       cache: true,
     }),
-    ThrottlerModule.forRoot({
-      ttl: 60,
-      limit: 10,
-    }),
+
     TypeOrmModule.forRootAsync({
       imports: [ConfigModule],
       useFactory: (configService: ConfigService) => ({
@@ -101,10 +99,6 @@ import { SentryInterceptor } from '../common/interceptors/sentry.interceptor';
     {
       provide: APP_INTERCEPTOR,
       useClass: SentryInterceptor,
-    },
-    {
-      provide: APP_GUARD,
-      useClass: ThrottlerGuard,
     },
   ],
 })
