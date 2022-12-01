@@ -41,7 +41,7 @@ async function bootstrap() {
   app.use(
     session({
       ...sessionConfig,
-      // store: new RedisStore({ client: redisClient }),
+      // store: new RedisStore({ client: redisClient, logErrors: true }),
     }),
   );
   app.use(passport.initialize());

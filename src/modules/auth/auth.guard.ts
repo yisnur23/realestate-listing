@@ -16,12 +16,12 @@ export class GoogleAuthGuard extends AuthGuard('google') {
 @Injectable()
 export class AuthenticationGuard implements CanActivate {
   constructor(private reflector: Reflector) {}
-  async canActivate(context: ExecutionContext) {
+  canActivate(context: ExecutionContext) {
     const isPublic = this.reflector.get<boolean>(
       IS_PUBLIC,
       context.getHandler(),
     );
     if (isPublic) return true;
-    return await context.switchToHttp().getRequest().isAuthenticated();
+    return context.switchToHttp().getRequest().isAuthenticated();
   }
 }
