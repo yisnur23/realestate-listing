@@ -21,7 +21,7 @@ export default new DataSource({
   port: configService.get('DB_PORT'),
   username: configService.get('DB_USERNAME'),
   password: configService.get('DB_PASSWORD'),
-  database: configService.get('DB_DATABASE_NAME'),
+  database: configService.get('DB_NAME'),
   migrations: [initialSchema1668934398753, fullTextSearch1668934579007],
   entities: [Listing, User, MediaItem, City, State, Tag],
 });

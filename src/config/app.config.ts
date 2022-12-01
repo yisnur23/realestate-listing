@@ -76,3 +76,8 @@ export const session = registerAs(
 export const sentry = registerAs('sentry', () => ({
   dsn: process.env.SENTRY_DSN,
 }));
+
+export const redis = registerAs('redis', () => ({
+  host: process.env.REDIS_HOST,
+  port: process.env.REDIS_PORT,
+}));

@@ -1,4 +1,4 @@
-import { ValidationPipe } from '@nestjs/common';
+import { ValidationPipe, Logger } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { NestFactory } from '@nestjs/core';
 import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
@@ -8,16 +8,42 @@ import { AppModule } from './modules/app.module';
 import { NestExpressApplication } from '@nestjs/platform-express';
 import { config } from 'aws-sdk';
 import * as Sentry from '@sentry/node';
+import { createClient } from 'redis';
+import connectRedis from 'connect-redis';
+
 import helmet from 'helmet';
 
 async function bootstrap() {
+  const logger = new Logger();
+
   const app = await NestFactory.create<NestExpressApplication>(AppModule);
   const configService = app.get(ConfigService);
   const sessionConfig = configService.get<SessionOptions>('session');
   const sentryDsn = configService.get('sentry.dsn');
+  const redisHost: string = configService.get('redis.host');
+  const redisPort: number = configService.get('redis.port');
+
+  const redisUrl = `redis://${redisHost}:${redisPort}`;
+  const redisClient = createClient({
+    url: redisUrl,
+  });
+  await redisClient.connect();
+  const RedisStore = connectRedis(session);
+
+  redisClient.on('error', (err) =>
+    Logger.error('Could not establish a connection with redis. ' + err),
+  );
+  redisClient.on('connect', () =>
+    Logger.verbose('Connected to redis successfully'),
+  );
 
   app.use(helmet());
-  app.use(session(sessionConfig));
+  app.use(
+    session({
+      ...sessionConfig,
+      // store: new RedisStore({ client: redisClient }),
+    }),
+  );
   app.use(passport.initialize());
   app.use(passport.session());
   app.useGlobalPipes(
