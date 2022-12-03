@@ -3,8 +3,8 @@ import { RouterModule } from '@nestjs/core';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { ConfigModule, ConfigService } from '@nestjs/config';
-import { AwsSdkModule } from 'nest-aws-sdk';
-import { S3 } from 'aws-sdk';
+
+import { PrometheusModule } from '@willsoto/nestjs-prometheus';
 import {
   aws,
   AWSConfig,
@@ -29,9 +29,13 @@ import { AddressRoutes } from './address/address.routes';
 import { ListingModule } from './listing/listing.module';
 import { MediaItemModule } from './media-item/media-item.module';
 import { SentryInterceptor } from '../common/interceptors/sentry.interceptor';
+import { MetricsController } from './metrics/metrics.controller';
 
 @Module({
   imports: [
+    PrometheusModule.register({
+      controller: MetricsController,
+    }),
     ConfigModule.forRoot({
       isGlobal: true,
       load: [database, google, session, aws, redis, sentry],
@@ -50,31 +54,6 @@ import { SentryInterceptor } from '../common/interceptors/sentry.interceptor';
         autoLoadEntities: true,
       }),
       inject: [ConfigService],
-    }),
-    AwsSdkModule.forRootAsync({
-      defaultServiceOptions: {
-        useFactory: (configService: ConfigService) => {
-          const awsConfig = configService.get<AWSConfig>('aws');
-
-          return {
-            region: awsConfig.region,
-            credentials: {
-              accessKeyId: awsConfig.accessKeyId,
-              secretAccessKey: awsConfig.secretAccessKey,
-            },
-          };
-        },
-        imports: [ConfigModule],
-        inject: [ConfigService],
-      },
-      services: [
-        {
-          service: S3,
-          serviceOptions: {
-            signatureVersion: 'v4',
-          },
-        },
-      ],
     }),
     AuthModule,
     ProfileModule,
