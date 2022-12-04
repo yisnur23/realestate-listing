@@ -25,9 +25,10 @@ async function bootstrap() {
 
   const redisUrl = `redis://${redisHost}:${redisPort}`;
   const redisClient = createClient({
-    url: redisUrl,
+    host: redisHost,
+    port: redisPort,
   });
-  await redisClient.connect();
+
   const RedisStore = connectRedis(session);
 
   redisClient.on('error', (err) =>
@@ -41,7 +42,7 @@ async function bootstrap() {
   app.use(
     session({
       ...sessionConfig,
-      // store: new RedisStore({ client: redisClient, logErrors: true }),
+      store: new RedisStore({ client: redisClient, logErrors: true }),
     }),
   );
   app.use(passport.initialize());
