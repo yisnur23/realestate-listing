@@ -1,12 +1,12 @@
-import { Column, Entity, ManyToMany, PrimaryGeneratedColumn } from 'typeorm';
+import { Column, Entity, ManyToMany, PrimaryGeneratedColumn, BaseEntity } from 'typeorm';
 import { Listing } from '../../listing/entities/listing.entity';
 
 @Entity()
-export class Tag {
+export class Tag extends BaseEntity{
   @PrimaryGeneratedColumn('uuid')
   id: string;
   @Column({
-    unique: true,
+    unique: true, 
   })
   name: string;
   @ManyToMany(() => Listing, (listing) => listing.tags, {

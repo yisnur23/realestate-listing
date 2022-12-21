@@ -1,4 +1,4 @@
-import { Column, Entity, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
+import { Column, Entity, ManyToOne, PrimaryGeneratedColumn, BaseEntity } from 'typeorm';
 import { Listing } from '../../listing/entities/listing.entity';
 
 export enum MediaItemType {
@@ -7,7 +7,7 @@ export enum MediaItemType {
 }
 
 @Entity()
-export class MediaItem {
+export class MediaItem extends BaseEntity{
   @PrimaryGeneratedColumn('uuid')
   id: string;
   @Column({

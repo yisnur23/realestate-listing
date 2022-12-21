@@ -7,6 +7,7 @@ import {
   ManyToOne,
   OneToMany,
   PrimaryGeneratedColumn,
+  BaseEntity
 } from 'typeorm';
 import { Point } from 'geojson';
 import { User } from '../../profile/entities/user.entity';
@@ -23,7 +24,7 @@ export enum ListingType {
 }
 
 @Entity()
-export class Listing {
+export class Listing extends BaseEntity{
   @PrimaryGeneratedColumn('uuid')
   id: string;
   @Column({

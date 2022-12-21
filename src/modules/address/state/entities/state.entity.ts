@@ -1,8 +1,8 @@
-import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
+import { Column, Entity, OneToMany, PrimaryGeneratedColumn, BaseEntity } from 'typeorm';
 import { City } from '../../city/entities/city.entity';
 
 @Entity()
-export class State {
+export class State extends BaseEntity{
   @PrimaryGeneratedColumn('uuid')
   id: string;
   @Column()

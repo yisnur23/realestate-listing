@@ -5,6 +5,7 @@ import {
   OneToMany,
   ManyToMany,
   JoinTable,
+  BaseEntity
 } from 'typeorm';
 import { Listing } from '../../listing/entities/listing.entity';
 
@@ -14,7 +15,7 @@ export enum UserRole {
 }
 
 @Entity()
-export class User {
+export class User extends BaseEntity{
   @PrimaryGeneratedColumn('uuid')
   id: string;
   @Column()
